@@ -311,11 +311,130 @@ public class Ticketmaster{
 		}while (true);
 		return input;
 	}//end readChoice
-	
-	public static void AddUser(Ticketmaster esql){//1
+
+
+
+
+
+//======================================================================================================
+
+	public static void AddUser(Ticketmaster esql){//1 works!
+		// insert tuple into database
 		
+		//gather data
+		String email;
+		String lname;
+		String fname;
+		long phone;
+		String pwd;
+
+		do{
+			System.out.println("Email: ");
+			try {
+				email = in.readLine();
+				if(email.length() > 64 || email.length() == 0)  {
+					throw new ArithmeticException("Email cannot be empty and has to be less 64 characters or less.");
+				}
+				else {
+					break;
+				}
+			} catch(Exception e) {
+				System.out.println("Your input is invalid!");
+				continue;
+			}
+		} while(true);
+
+		do{
+			System.out.println("Last name: ");
+			try {
+				lname = in.readLine();
+				if(lname.length() > 32 || lname.length() == 0)  {
+					throw new ArithmeticException("Last name cannot be empty and has 32 characters or less.");
+				}
+				else {
+					break;
+				}
+			} catch(Exception e) {
+				System.out.println("Your input is invalid!");
+				continue;
+			}
+		} while(true);
+
+		do{
+			System.out.println("First name: ");
+			try {
+				fname = in.readLine();
+				if(fname.length() > 32 || fname.length() == 0)  {
+					throw new ArithmeticException("First name cannot be empty and has to be 32 characters or less.");
+				}
+				else {
+					break;
+				}
+			} catch(Exception e) {
+				System.out.println("Your input is invalid!");
+				continue;
+			}
+		} while(true);
+
+		do{
+			System.out.println("Phone number: ");
+			try {
+				phone = Long.parseLong(in.readLine());
+				if(phone > 9999999999L || phone < 0) {
+					throw new ArithmeticException("Phone number cannot be empty and has to be 10 digits or less.");
+				}
+				else {
+					break;
+				}
+			} catch(Exception e) {
+				System.out.println("Your input is invalid!");
+				continue;
+			}
+		} while(true);
+
+		do{
+			System.out.println("Password: ");
+			try {
+				pwd = in.readLine();
+				if(pwd.length() > 64 || pwd.length() == 0) {
+					throw new ArithmeticException("Password cannot be empty and has to be 64 characters or less.");
+				}
+				else {
+					break;
+				}
+			} catch(Exception e) {
+				System.out.println("Your input is invalid!");
+				continue;
+			}
+		} while(true);
+
+		//insert into table
+		try {
+			String query = "INSERT INTO Users (email, lname, fname, phone, pwd) VALUES ('" + email + "', '" + lname + "', '" + fname + "', '" + phone + "', '" + pwd + "');";
+			esql.executeUpdate(query);
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		
+		System.out.println("User successfully created");
 	}
 	
+
+
+
+//======================================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
 	public static void AddBooking(Ticketmaster esql){//2
 		
 	}
