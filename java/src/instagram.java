@@ -251,44 +251,21 @@ public class Ticketmaster{
 			
 			esql = new Ticketmaster (dbname, dbport, user, "");
 			
+			userLogin();
+
 			boolean keepon = true;
+
 			while(keepon){
 				System.out.println("MAIN MENU");
 				System.out.println("---------");
-				System.out.println("1. Add User");
-				System.out.println("2. Add Booking");
-				System.out.println("3. Add Movie Showing for an Existing Theater");
-				System.out.println("4. Cancel Pending Bookings");
-				System.out.println("5. Change Seats Reserved for a Booking");
-				System.out.println("6. Remove a Payment");
-				System.out.println("7. Clear Cancelled Bookings");
-				System.out.println("8. Remove Shows on a Given Date");
-				System.out.println("9. List all Theaters in a Cinema Playing a Given Show");
-				System.out.println("10. List all Shows that Start at a Given Time and Date");
-				System.out.println("11. List Movie Titles Containing \"love\" Released After 2010");
-				System.out.println("12. List the First Name, Last Name, and Email of Users with a Pending Booking");
-				System.out.println("13. List the Title, Duration, Date, and Time of Shows Playing a Given Movie at a Given Cinema During a Date Range");
-				System.out.println("14. List the Movie Title, Show Date & Start Time, Theater Name, and Cinema Seat Number for all Bookings of a Given User");
+				System.out.println("1. Print login");
 				System.out.println("15. EXIT");
 				
 				/*
 				 * FOLLOW THE SPECIFICATION IN THE PROJECT DESCRIPTION
 				 */
 				switch (readChoice()){
-					case 1: AddUser(esql); break;
-					case 2: AddBooking(esql); break;
-					case 3: AddMovieShowingToTheater(esql); break;
-					case 4: CancelPendingBookings(esql); break;
-					case 5: ChangeSeatsForBooking(esql); break;
-					case 6: RemovePayment(esql); break;
-					case 7: ClearCancelledBookings(esql); break;
-					case 8: RemoveShowsOnDate(esql); break;
-					case 9: ListTheatersPlayingShow(esql); break;
-					case 10: ListShowsStartingOnTimeAndDate(esql); break;
-					case 11: ListMovieTitlesContainingLoveReleasedAfter2010(esql); break;
-					case 12: ListUsersWithPendingBooking(esql); break;
-					case 13: ListMovieAndShowInfoAtCinemaInDateRange(esql); break;
-					case 14: ListBookingInfoForUser(esql); break;
+					case 1: printLogin(); break;
 					case 15: keepon = false; break;
 				}
 			}
@@ -323,149 +300,43 @@ public class Ticketmaster{
 		return input;
 	}
 	// end readChoice
-	
-	//Ticketmaster esql is a java object
 
-	public static void AddUser(Ticketmaster esql){//1 works!
-		// insert tuple into database
-		
-		//gather data
-		String email;
-		String lname;
+	public static void userLogin(Ticketmaster esql) {
+		public static string username;
+		public static string password;
 		String fname;
-		long phone;
-		String pwd;
 
 		do{
-			System.out.println("Email: ");
-			try {
-				email = in.readLine();
-				if(email.length() > 64 || email.length() == 0)  {
-					throw new ArithmeticException("Email cannot be empty and has to be less 64 characters or less.");
-				}
-				else {
-					break;
-				}
-			} catch(Exception e) {
-				System.out.println("Your input is invalid!");
-				continue;
-			}
-		} while(true);
-
-		do{
-			System.out.println("Last name: ");
-			try {
-				lname = in.readLine();
-				if(lname.length() > 32 || lname.length() == 0)  {
-					throw new ArithmeticException("Last name cannot be empty and has 32 characters or less.");
-				}
-				else {
-					break;
-				}
-			} catch(Exception e) {
-				System.out.println("Your input is invalid!");
-				continue;
-			}
-		} while(true);
-
-		do{
-			System.out.println("First name: ");
-			try {
-				fname = in.readLine();
-				if(fname.length() > 32 || fname.length() == 0)  {
-					throw new ArithmeticException("First name cannot be empty and has to be 32 characters or less.");
-				}
-				else {
-					break;
-				}
-			} catch(Exception e) {
-				System.out.println("Your input is invalid!");
-				continue;
-			}
-		} while(true);
-
-		do{
-			System.out.println("Phone number: ");
-			try {
-				phone = Long.parseLong(in.readLine());
-				if(phone > 9999999999L || phone < 0) {
-					throw new ArithmeticException("Phone number cannot be empty and has to be 10 digits or less.");
-				}
-				else {
-					break;
-				}
-			} catch(Exception e) {
-				System.out.println("Your input is invalid!");
-				continue;
-			}
-		} while(true);
-
-		do{
+			System.out.println("Username: ");
+			username = in.readLine();
 			System.out.println("Password: ");
+			password = in.readLine();
+
 			try {
-				pwd = in.readLine();
-				if(pwd.length() > 64 || pwd.length() == 0) {
-					throw new ArithmeticException("Password cannot be empty and has to be 64 characters or less.");
-				}
+				String query_user = "SELECT *\n FROM Users\n WHERE email = '" + username + "'and pwd = '" + password + "';";
+				
+				if(esql.executeQuery(query_user) == 0) {
+					System.out.println("Incorrect username and/or password");
+					continue;
+				} 
 				else {
+					String query_fname = "SELECT fname\n FROM Users\n WHERE email = '" + username + "'and pwd = '" + password + "';";
+					fname = esql.executeQueryAndReturnResult(query_fname);
+					System.out.println("Welcome back " + fname + "!");
 					break;
 				}
+
 			} catch(Exception e) {
-				System.out.println("Your input is invalid!");
+				System.out.println(e.getMessage());
 				continue;
 			}
+
 		} while(true);
 
-		//insert into table
-		try {
-			String query = "INSERT INTO Users (email, lname, fname, phone, pwd) VALUES ('" + email + "', '" + lname + "', '" + fname + "', '" + phone + "', '" + pwd + "');";
-			esql.executeUpdate(query);
-		} catch(Exception e) {
-			System.out.println(e.getMessage());
-		}
-		
-		System.out.println("User successfully created");
 	}
 
-    public static void FollowUser(Instagram esql) {
-
-    }
-
-    public static void SearchUserBasedOnPhotoTitle(Instgram esql) {
-
-    }
-
-    public static void SearchUserBasedOnTags(Instgram esql) {
-        
-    }
-
-    public static void SearchUserBasedOnRatings(Instgram esql) {
-        
-    }
-
-    public static void ListStatsOfPhoto(Instagram esql) {
-
-    }
-
-    public static void AddTagsToPhoto(Instagram esql) {
-
-    }
-
-    public static void CommentOnPhoto(Instagram esql) {
-        
-    }
-
-    public static void TagUserToPhoto(Instagram esql) {
-        
-    }
-
-    public static void ListMostPopularPhotosAndUsers(Instagram esql) {
-        
-    }
-
-    public static void GenerateNewsFeed(Instagram esql) {
-
-    }
-
-
+	public static void printLogin() {
+		System.out.println("Username is: " + username);
+		System.out.println("Password is: " + password);
+	}
 }
