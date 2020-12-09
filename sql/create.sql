@@ -5,20 +5,22 @@ DROP TABLE IF EXISTS Users;
 
 CREATE TABLE Users (
     userID BIGINT NOT NULL,
+    username VARCHAR(64) NOT NULL,
     fname VARCHAR(32) NOT NULL,
     lname VARCHAR(32) NOT NULL,
+    pwd CHAR(64) NOT NULL,
     PRIMARY KEY(userID)
 );
 
 CREATE TABLE Photo (
     pid BIGINT NOT NULL,
-    userID BIGINT NOT NULL,
+    username VARCHAR(64) NOT NULL,
     title CHAR(128) NOT NULL,
     likes BIGINT NOT NULL,
     dislikes BIGINT NOT NULL, 
     pdate DATE NOT NULL,
     PRIMARY KEY (pid),
-    FOREIGN KEY (userID) REFERENCES Users(userID)
+    FOREIGN KEY (username) REFERENCES Users(username)
 );
 
 -- Relations
@@ -29,15 +31,17 @@ CREATE TABLE Photo (
 
 COPY Users (
     userID,
+    username,
     fname,
-    lname
+    lname,
+    pwd
 )
 FROM 'Users.csv'
 WITH DELIMITER ',';
 
 COPY Photo (
     pid,
-    userID,	
+    username,	
     title,
     likes,
     dislikes,
