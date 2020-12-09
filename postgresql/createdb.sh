@@ -14,6 +14,9 @@ echo "creating db named ... $dbname"
 createdb -h localhost $dbname
 pg_ctl status
 
+echo "Copying csv files ... "
+sleep 1
+cp $root/data/*.csv /tmp/$(logname)/mydb/data/
 
 echo "Initializing tables .. "
 psql -h localhost $dbname < ../sql/create.sql
