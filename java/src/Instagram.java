@@ -343,92 +343,159 @@ public class Instagram{
 	// 	System.out.println("Username is: " + username);
 	// 	System.out.println("Password is: " + password);
 	// }
-		public static void DisplayFeed(Instagram esql) {
-			try {
-				String query_display = "SELECT *\n FROM Photo\n ORDER BY likes DESC;";
-				if(esql.executeQueryAndPrintResult(query_display) == 0) {
-					System.out.println("Nothing on feed to display");
-				}
-			} catch(Exception e) {
-				System.out.println(e.getMessage());
+	public static void DisplayFeed(Instagram esql) {
+		try {
+			String query_display = "SELECT *\n FROM Photo\n ORDER BY likes DESC;";
+			if(esql.executeQueryAndPrintResult(query_display) == 0) {
+				System.out.println("Nothing on feed to display");
 			}
- 		}
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+ 	}
 
-		public static void ViewUserPhotos(Instagram esql) {
-			String username;
-			String password;
-			do {
-				System.out.println("Username: ");
-				try {
-					username = in.readLine();
-					if(username.length() > 64 || username.length() == 0)  {
-						throw new ArithmeticException("Username cannot be empty and has to be less 64 characters or less.");
-					}
-					else {
-						break;
-					}
-				} catch(Exception e) {
-					System.out.println("Invalid input!");
-					continue;
-				}
-			} while(true);
-
-			do {
-				System.out.println("Password: ");
-				try {
-					password = in.readLine();
-					if(password.length() > 64 || password.length() == 0)  {
-						throw new ArithmeticException("Password cannot be empty and has to be less 64 characters or less.");
-					}
-					else {
-						break;
-					}
-				} catch(Exception e) {
-					System.out.println("Invalid input!");
-					continue;
-				}
-			} while(true);
-
+	public static void ViewUserPhotos(Instagram esql) {
+		String username;
+		String password;
+		do {
+			System.out.println("Username: ");
 			try {
-				String query_user = "SELECT *\n FROM Users\n WHERE username = '" + username + "'and pwd = '" + password + "';";
-				if (esql.executeQuery(query_user) == 0) {
-					System.out.println("This user does not exist");
+				username = in.readLine();
+				if(username.length() > 64 || username.length() == 0)  {
+					throw new ArithmeticException("Username cannot be empty and has to be less 64 characters or less.");
 				}
-				
+				else {
+					break;
+				}
 			} catch(Exception e) {
-				System.out.println(e.getMessage());
+				System.out.println("Invalid input!");
+				continue;
+			}
+		} while(true);
+		do {
+			System.out.println("Password: ");
+			try {
+				password = in.readLine();
+				if(password.length() > 64 || password.length() == 0)  {
+					throw new ArithmeticException("Password cannot be empty and has to be less 64 characters or less.");
+				}
+				else {
+					break;
+				}
+			} catch(Exception e) {
+				System.out.println("Invalid input!");
+				continue;
+			}
+		} while(true);
+
+		try {
+			String query_user = "SELECT *\n FROM Users\n WHERE username = '" + username + "'and pwd = '" + password + "';";
+			if (esql.executeQuery(query_user) == 0) {
+				System.out.println("This user does not exist");
 			}
 			
-			try {
-				String query_usr_photos = "SELECT *\n FROM Photo WHERE username = '" + username + "';";
-				if(esql.executeQueryAndPrintResult(query_usr_photos) == 0) {
-					System.out.println("Photos DNE");
-					return;
-				}
-			} catch(Exception e) {
-				System.out.println(e.getMessage());
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+			
+		try {
+			String query_usr_photos = "SELECT *\n FROM Photo WHERE username = '" + username + "';";
+			if(esql.executeQueryAndPrintResult(query_usr_photos) == 0) {
+				System.out.println("Photos DNE");
+				return;
 			}
- 		
-
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
 		}
 
-		// public static void UploadPhotos(Instagram esql) {
-		// 	String username;
-		// 	String password;
-		// 	System.out.println("Username: ");
-		// 	username = in.readLine();
-		// 	System.out.println("Password: ");
-		// 	password = in.readLine();
+	}
 
-		// 	try {
-		// 		String query_user = "SELECT *\n FROM Users\n WHERE username = '" + username + "'and pwd = '" + password + "';";
-		// 		if (esql.executeQuery(query_user) == 0) {
-		// 			System.out.println("This user does not exist");
-		// 		}
-				
-		// 	} catch(Exception e) {
-		// 		System.out.println(e.getMessage());
-		// 	}
+	public static void UploadPhotos(Instagram esql) {
+		String username;
+		String password;
+		String photo_title;
+		
+		do {
+			System.out.println("Username: ");
+			try {
+				username = in.readLine();
+				if(username.length() > 64 || username.length() == 0)  {
+					throw new ArithmeticException("Username cannot be empty and has to be less 64 characters or less.");
+				}
+				else {
+					break;
+				}
+			} catch(Exception e) {
+				System.out.println("Invalid input!");
+				continue;
+			}
+		} while(true);
 
-		// }
+		do {
+			System.out.println("Password: ");
+			try {
+				password = in.readLine();
+				if(password.length() > 64 || password.length() == 0)  {
+					throw new ArithmeticException("Password cannot be empty and has to be less 64 characters or less.");
+				}
+				else {
+					break;
+				}
+			} catch(Exception e) {
+				System.out.println("Invalid input!");
+				continue;
+			}
+		} while(true);
+
+		try {
+			String query_user = "SELECT *\n FROM Users\n WHERE username = '" + username + "'and pwd = '" + password + "';";
+			if (esql.executeQuery(query_user) == 0) {
+				System.out.println("This user does not exist");
+			}
+			
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+		do {
+			System.out.println("Enter title for photo: ");
+			try {
+				photo_title = in.readLine();
+				if(photo_title.length() > 128 || photo_title.length() == 0)  {
+					throw new ArithmeticException("Photo title cannot be empty and has to be less 128 characters or less.");
+				}
+				else {
+					break;
+				}
+			} catch(Exception e) {
+				System.out.println("Invalid input!");
+				continue;
+			}
+		} while(true);
+
+		ZonedDateTime zone_date_time = ZonedDateTime.now();
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ssx");
+		String zdt = dtf.format(zone_date_time);
+
+		List<List<String>> photo_id_list = new ArrayList<List<String>>();
+
+		try {
+			String photo_id_query = "SELECT max(pid) from Photo";
+
+			photo_id_list = esql.executeQueryAndReturnResult(photo_id_query);
+
+			if (photo_id_list.size() == 0) {
+				System.out.println("This does not exist"); 
+				return;
+			}
+			
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		Integer photo_id = Integer.parseInt(photo_id_list.get(0).get(0)) + 1;
+		System.out.println("Here is the your PID: " + photo_id);
+		try {
+			String insert_query = "INSERT INTO Photo (pid, username, title, likes, dislikes, pdate) VALUES ('" + photo_id + "', '" + username + "', '" + title + "', '0', '0', '" + zdt + "');";
+		}
+	}
 }
