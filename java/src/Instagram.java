@@ -344,27 +344,50 @@ public class Instagram{
 	// 	System.out.println("Password is: " + password);
 	// }
 		public static void DisplayFeed(Instagram esql) {
-			String query_display = "SELECT *\n FROM Photos\n ORDER BY likes DESC;";
-			if(esql.executeQueryAndPrintResult(query_display) == 0) {
-				System.out.println("Nothing on feed to display");
+			try {
+				String query_display = "SELECT *\n FROM Photos\n ORDER BY likes DESC;";
+				if(esql.executeQueryAndPrintResult(query_display) == 0) {
+					System.out.println("Nothing on feed to display");
+				}
+			} catch(Exception e) {
+				System.out.println(e.getMessage());
 			}
-		}
+ 		}
 
 		public static void ViewUserPhotos(Instagram esql) {
 			String username;
 			String password;
-			try {
+			do {
 				System.out.println("Username: ");
-				username = in.readLine();
-			} catch(Exception e) {
-				System.out.println(e.getMessage());
-			}
-			try {
+				try {
+					username = in.readLine();
+					if(username.length() > 64 || username.length() == 0)  {
+						throw new ArithmeticException("Username cannot be empty and has to be less 64 characters or less.");
+					}
+					else {
+						break;
+					}
+				} catch(Exception e) {
+					System.out.println("Invalid input!");
+					continue;
+				}
+			} while(true);
+
+			do {
 				System.out.println("Password: ");
-				password = in.readLine();
-			} catch(Exception e) {
-				System.out.println(e.getMessage());
-			}
+				try {
+					password = in.readLine();
+					if(passwprd.length() > 64 || password.length() == 0)  {
+						throw new ArithmeticException("Password cannot be empty and has to be less 64 characters or less.");
+					}
+					else {
+						break;
+					}
+				} catch(Exception e) {
+					System.out.println("Invalid input!");
+					continue;
+				}
+			} while(true);
 
 			try {
 				String query_user = "SELECT *\n FROM Users\n WHERE username = '" + username + "'and pwd = '" + password + "';";
@@ -375,8 +398,17 @@ public class Instagram{
 			} catch(Exception e) {
 				System.out.println(e.getMessage());
 			}
-
-			String query_usr_photos = "SELECT *\n FROM Photos WHERE username = '" + username + "';";
+			
+			try {
+				String query_usr_photos = "SELECT *\n FROM Photos WHERE username = '" + username + "';";
+				if(esql.executeQueryAndPrintResult(query_usr_photos) == 0) {
+					System.out.println("Photos DNE");
+					return;
+				}
+			} catch(Exception e) {
+				System.out.println(e.getMessage());
+			}
+ 		
 
 		}
 
