@@ -260,7 +260,7 @@ public class Instagram{
 				System.out.println("---------");
 				System.out.println("1. Display feed");
 				System.out.println("2. View user photos");
-				//System.out.println("3. Upload photos");
+				System.out.println("3. Upload photos");
 				System.out.println("15. EXIT");
 				
 				/*
@@ -269,7 +269,7 @@ public class Instagram{
 				switch (readChoice()){
 					case 1: DisplayFeed(esql); break;
 					case 2: ViewUserPhotos(esql); break;
-					//case 3: UploadPhotos(esql); break;
+					case 3: UploadPhotos(esql); break;
 					case 15: keepon = false; break;
 				}
 			}
@@ -495,7 +495,10 @@ public class Instagram{
 		Integer photo_id = Integer.parseInt(photo_id_list.get(0).get(0)) + 1;
 		System.out.println("Here is the your PID: " + photo_id);
 		try {
-			String insert_query = "INSERT INTO Photo (pid, username, title, likes, dislikes, pdate) VALUES ('" + photo_id + "', '" + username + "', '" + title + "', '0', '0', '" + zdt + "');";
+			String insert_query = "INSERT INTO Photo (pid, username, title, likes, dislikes, pdate) VALUES ('" + photo_id + "', '" + username + "', '" + photo_title + "', '0', '0', '" + zdt + "');";
+			esql.executeUpdate(insert_query);
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
 		}
 	}
 }
