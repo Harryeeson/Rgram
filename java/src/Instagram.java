@@ -250,8 +250,6 @@ public class Instagram{
 			String user = args[2];
 			
 			esql = new Instagram (dbname, dbport, user, "");
-			
-			//userLogin();
 
 			boolean keepon = true;
 
@@ -261,6 +259,8 @@ public class Instagram{
 				System.out.println("1. Display feed");
 				System.out.println("2. View user photos");
 				System.out.println("3. Upload photos");
+				System.out.println("5. Comment on photo");
+				System.out.println("6. Add a tag to a photo");
 				System.out.println("15. EXIT");
 				
 				/*
@@ -270,6 +270,8 @@ public class Instagram{
 					case 1: DisplayFeed(esql); break;
 					case 2: ViewUserPhotos(esql); break;
 					case 3: UploadPhotos(esql); break;
+					case 5: CommentPhoto(esql);	break;
+					case 6: TagPhoto(esql);		break;
 					case 15: keepon = false; break;
 				}
 			}
@@ -305,44 +307,6 @@ public class Instagram{
 	}
 	// end readChoice
 
-	// public static void userLogin(Instagram esql) {
-	// 	String username;
-	// 	String password;
-	// 	String fname;
-
-	// 	do{
-	// 		System.out.println("Username: ");
-	// 		username = in.readLine();
-	// 		System.out.println("Password: ");
-	// 		password = in.readLine();
-
-	// 		try {
-	// 			String query_user = "SELECT *\n FROM Users\n WHERE email = '" + username + "'and pwd = '" + password + "';";
-				
-	// 			if(esql.executeQuery(query_user) == 0) {
-	// 				System.out.println("Incorrect username and/or password");
-	// 				continue;
-	// 			} 
-	// 			else {
-	// 				String query_fname = "SELECT fname\n FROM Users\n WHERE email = '" + username + "'and pwd = '" + password + "';";
-	// 				fname = esql.executeQueryAndReturnResult(query_fname);
-	// 				System.out.println("Welcome back " + fname + "!");
-	// 				break;
-	// 			}
-
-	// 		} catch(Exception e) {
-	// 			System.out.println(e.getMessage());
-	// 			continue;
-	// 		}
-
-	// 	} while(true);
-
-	// }
-
-	// public static void printLogin() {
-	// 	System.out.println("Username is: " + username);
-	// 	System.out.println("Password is: " + password);
-	// }
 	public static void DisplayFeed(Instagram esql) {
 		try {
 			String query_display = "SELECT *\n FROM Photo\n ORDER BY likes DESC;";
@@ -501,4 +465,148 @@ public class Instagram{
 			System.out.println(e.getMessage());
 		}
 	}
+
+	public static void CommentPhoto(Instagram esql) {
+		String username;
+		String password;
+		String author;
+		String photo_title;
+		String comment;
+
+		do {
+			System.out.println("Username: ");
+			try {
+				username = in.readLine();
+				if(username.length() > 64 || username.length() == 0)  {
+					throw new ArithmeticException("Username cannot be empty and has to be less 64 characters or less.");
+				}
+				else {
+					break;
+				}
+			} catch(Exception e) {
+				System.out.println("Invalid input!");
+				continue;
+			}
+		} while(true);
+
+		do {
+			System.out.println("Password: ");
+			try {
+				password = in.readLine();
+				if(password.length() > 64 || password.length() == 0)  {
+					throw new ArithmeticException("Password cannot be empty and has to be less 64 characters or less.");
+				}
+				else {
+					break;
+				}
+			} catch(Exception e) {
+				System.out.println("Invalid input!");
+				continue;
+			}
+		} while(true);
+
+		try {
+			String query_user = "SELECT *\n FROM Users\n WHERE username = '" + username + "'and pwd = '" + password + "';";
+			if (esql.executeQuery(query_user) == 0) {
+				System.out.println("This user does not exist");
+			}
+			
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+		do {
+			System.out.println("Enter the username who posted the photo: ");
+			try {
+				author = in.readLine();
+				if(author.length() > 64 || author.length() == 0)  {
+					throw new ArithmeticException("Author username cannot be empty and has to be less 64 characters or less.");
+				}
+				else {
+					break;
+				}
+			} catch(Exception e) {
+				System.out.println("Invalid input!");
+				continue;
+			}
+		} while(true);
+
+		do {
+			System.out.println("Enter the title of the photo you would like to comment on: ");
+			try {
+				photo_title = in.readLine();
+				if(photo_title.length() > 128 || photo_title.length() == 0)  {
+					throw new ArithmeticException("Username cannot be empty and has to be less 128 characters or less.");
+				}
+				else {
+					break;
+				}
+			} catch(Exception e) {
+				System.out.println("Invalid input!");
+				continue;
+			}
+		} while(true);
+
+		List<List<String>> pid_list = new ArrayList<List<String>>();
+		try {
+			String query_pid = "SELECT pid\n FROM Photo\n WHERE username = '" + author + "'and title = '" + photo_title + "';";
+			pid_list = esql.executeQueryAndReturnResult(query_pid)
+			if (pid_list.size() == 0) {
+				System.out.println("The user does not have this photo, or this photo is not posted by this user");
+				return;
+			}
+			
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+		Integer pid = Integer.parseInt(pid_list.get(0).get(0));
+
+		List<List<String>> cid_list = new ArrayList<List<String>>();
+
+		try {
+			String cid_query = "SELECT max(pid) from Photo";
+
+			cid_list = esql.executeQueryAndReturnResult(cid_query);
+
+			if (cid_list.size() == 0) {
+				System.out.println("This does not exist"); 
+				return;
+			}
+			
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		Integer cid = Integer.parseInt(cid_list.get(0).get(0)) + 1;
+
+		do {
+			System.out.println("Enter your comment: ");
+			try {
+				comment = in.readLine();
+				if(comment.length() > 128 || comment.length() == 0)  {
+					throw new ArithmeticException("comment cannot be empty and has to be less 128 characters or less.");
+				}
+				else {
+					break;
+				}
+			} catch(Exception e) {
+				System.out.println("Invalid input!");
+				continue;
+			}
+		} while(true);
+
+		try {
+			String query = "INSERT INTO PhotoComments (cid, pid, commentor, comments) VALUES ('" + cid + "', '" + pid + "', '" + username
+							 + "', '" + comment + "');";
+			esql.executeUpdate(query);
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+	}
+
+	public static void TagPhoto(Instagram esql) {
+
+	}
+
 }
