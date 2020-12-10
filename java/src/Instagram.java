@@ -345,7 +345,7 @@ public class Instagram{
 	// }
 		public static void DisplayFeed(Instagram esql) {
 			try {
-				String query_display = "SELECT *\n FROM Photos\n ORDER BY likes DESC;";
+				String query_display = "SELECT *\n FROM Photo\n ORDER BY likes DESC;";
 				if(esql.executeQueryAndPrintResult(query_display) == 0) {
 					System.out.println("Nothing on feed to display");
 				}
@@ -377,7 +377,7 @@ public class Instagram{
 				System.out.println("Password: ");
 				try {
 					password = in.readLine();
-					if(passwprd.length() > 64 || password.length() == 0)  {
+					if(password.length() > 64 || password.length() == 0)  {
 						throw new ArithmeticException("Password cannot be empty and has to be less 64 characters or less.");
 					}
 					else {
@@ -400,7 +400,7 @@ public class Instagram{
 			}
 			
 			try {
-				String query_usr_photos = "SELECT *\n FROM Photos WHERE username = '" + username + "';";
+				String query_usr_photos = "SELECT *\n FROM Photo WHERE username = '" + username + "';";
 				if(esql.executeQueryAndPrintResult(query_usr_photos) == 0) {
 					System.out.println("Photos DNE");
 					return;
