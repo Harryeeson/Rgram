@@ -260,16 +260,16 @@ public class Instagram{
 				System.out.println("---------");
 				System.out.println("1. Display feed");
 				System.out.println("2. View user photos");
-				System.out.println("3. Upload photos")
+				//System.out.println("3. Upload photos");
 				System.out.println("15. EXIT");
 				
 				/*
 				 * FOLLOW THE SPECIFICATION IN THE PROJECT DESCRIPTION
 				 */
 				switch (readChoice()){
-					case 1: DisplayFeed(); break;
-					case 2: ViewUserPhotos(); break;
-					case 3: UploadPhotos(); break;
+					case 1: DisplayFeed(esql); break;
+					case 2: ViewUserPhotos(esql); break;
+					//case 3: UploadPhotos(esql); break;
 					case 15: keepon = false; break;
 				}
 			}
@@ -345,16 +345,26 @@ public class Instagram{
 	// }
 		public static void DisplayFeed(Instagram esql) {
 			String query_display = "SELECT *\n FROM Photos\n ORDER BY likes DESC;";
-			esql.executeQueryAndPrintResult(query_display);
+			if(esql.executeQueryAndPrintResult(query_display) == 0) {
+				System.out.println("Nothing on feed to display");
+			}
 		}
 
 		public static void ViewUserPhotos(Instagram esql) {
 			String username;
 			String password;
-			System.out.println("Username: ");
-			username = in.readLine();
-			System.out.println("Password: ");
-			password = in.readLine();
+			try {
+				System.out.println("Username: ");
+				username = in.readLine();
+			} catch(Exception e) {
+				System.out.println(e.getMessage());
+			}
+			try {
+				System.out.println("Password: ");
+				password = in.readLine();
+			} catch(Exception e) {
+				System.out.println(e.getMessage());
+			}
 
 			try {
 				String query_user = "SELECT *\n FROM Users\n WHERE username = '" + username + "'and pwd = '" + password + "';";
