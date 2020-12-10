@@ -1,7 +1,9 @@
 ﻿DROP TABLE IF EXISTS Photo;
 DROP TABLE IF EXISTS Users;
+DROP TABLE IF EXISTS Following; 
 
 -- Entities
+
 
 CREATE TABLE Users (
     userID BIGINT NOT NULL,
@@ -22,6 +24,15 @@ CREATE TABLE Photo (
     PRIMARY KEY (pid),
     FOREIGN KEY (username) REFERENCES Users(username)
 );
+
+CREATE TABLE Following (
+    username VARCHAR(64) NOT NULL,
+    following_usr VARCHAR(64) NOT NULL,
+    PRIMARY KEY(following_usr),
+    FOREIGN KEY(username) REFERENCES Users(username)
+
+); 
+
 
 -- Relations
 
@@ -48,4 +59,11 @@ COPY Photo (
     pdate	
 )
 FROM 'Photo.csv'
+WITH DELIMITER ',';
+
+COPY FOLLOWING (
+    username,
+    following_usr
+)
+FROM 'Following.csv'
 WITH DELIMITER ',';
