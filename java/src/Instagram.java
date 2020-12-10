@@ -550,7 +550,7 @@ public class Instagram{
 		List<List<String>> pid_list = new ArrayList<List<String>>();
 		try {
 			String query_pid = "SELECT pid\n FROM Photo\n WHERE username = '" + author + "'and title = '" + photo_title + "';";
-			pid_list = esql.executeQueryAndReturnResult(query_pid)
+			pid_list = esql.executeQueryAndReturnResult(query_pid);
 			if (pid_list.size() == 0) {
 				System.out.println("The user does not have this photo, or this photo is not posted by this user");
 				return;
@@ -565,7 +565,7 @@ public class Instagram{
 		List<List<String>> cid_list = new ArrayList<List<String>>();
 
 		try {
-			String cid_query = "SELECT max(pid) from Photo";
+			String cid_query = "SELECT max(cid) from PhotoComments";
 
 			cid_list = esql.executeQueryAndReturnResult(cid_query);
 
