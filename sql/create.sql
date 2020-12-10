@@ -61,7 +61,7 @@ COPY Photo (
 FROM 'Photo.csv'
 WITH DELIMITER ',';
 
-COPY FOLLOWING (
+COPY Following (
     username,
     following_usr
 )
