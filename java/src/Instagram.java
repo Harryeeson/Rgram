@@ -261,7 +261,7 @@ public class Instagram{
 				System.out.println("1. Display feed");
 				System.out.println("2. View user photos");
 				System.out.println("3. Upload photos");
-				System.out.println("4. Follower User")
+				System.out.println("4. Follower User");
 				System.out.println("15. EXIT");
 				
 				/*
@@ -513,7 +513,7 @@ public class Instagram{
 		do {
 				System.out.println("Username: ");
 				try {
-					username = in.readLine();executeUpdateexecuteUpdate
+					username = in.readLine();
 					if(username.length() > 64 || username.length() == 0)  {
 						throw new ArithmeticException("Username cannot be empty and has to be less 64 characters or less.");
 					}
@@ -545,8 +545,8 @@ public class Instagram{
 		do {
 			System.out.println("Enter the username of the user you would like to follow: "); 
 			try {
-					username = in.readLine();
-					if(username.length() > 64 || username.length() == 0)  {
+					following_usr = in.readLine();
+					if(following_usr.length() > 64 || following_usr.length() == 0)  {
 						throw new ArithmeticException("Username cannot be empty and has to be less 64 characters or less.");
 					}
 					else {
