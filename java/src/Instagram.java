@@ -261,7 +261,7 @@ public class Instagram{
 				System.out.println("1. Display feed");
 				System.out.println("2. View user photos");
 				System.out.println("3. Upload photos");
-				System.out.println("4. Follower User");
+				System.out.println("4. Follow User");
 				System.out.println("15. EXIT");
 				
 				/*
@@ -567,6 +567,7 @@ public class Instagram{
 			} 
 			catch(Exception e) {
 				System.out.println(e.getMessage());
+				continue; 
 			}
 		//check if the username to be followed exists in the database 	
 		try {
@@ -578,6 +579,7 @@ public class Instagram{
 			} 
 			catch(Exception e) {
 				System.out.println(e.getMessage());
+				continue; 
 			}
 		//add a new entry into the sql Following table 
 		try{
