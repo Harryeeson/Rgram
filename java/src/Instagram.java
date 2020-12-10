@@ -261,6 +261,7 @@ public class Instagram{
 				System.out.println("1. Display feed");
 				System.out.println("2. View user photos");
 				System.out.println("3. Upload photos");
+				System.out.println("4. Follower User")
 				System.out.println("15. EXIT");
 				
 				/*
@@ -270,6 +271,7 @@ public class Instagram{
 					case 1: DisplayFeed(esql); break;
 					case 2: ViewUserPhotos(esql); break;
 					case 3: UploadPhotos(esql); break;
+					case 4: AddFollowing(esql); break; 
 					case 15: keepon = false; break;
 				}
 			}
@@ -501,4 +503,92 @@ public class Instagram{
 			System.out.println(e.getMessage());
 		}
 	}
+
+	public static void AddFollowing(Instagram esql){
+		String username; 
+		String password; 
+		String following_usr; 
+
+		//have user input username and check if username is valid
+		do {
+				System.out.println("Username: ");
+				try {
+					username = in.readLine();executeUpdateexecuteUpdate
+					if(username.length() > 64 || username.length() == 0)  {
+						throw new ArithmeticException("Username cannot be empty and has to be less 64 characters or less.");
+					}
+					else {
+						break;
+					}
+				} catch(Exception e) {
+					System.out.println("Invalid input!");
+					continue;
+				}
+			} while(true);
+		//have user input password and check if it is valid
+		do {
+			System.out.println("Password: ");
+			try {
+				password = in.readLine();
+				if(password.length() > 64 || password.length() == 0)  {
+					throw new ArithmeticException("Password cannot be empty and has to be less 64 characters or less.");
+				}
+				else {
+					break;
+				}
+			} catch(Exception e) {
+				System.out.println("Invalid input!");
+				continue;
+			}
+		} while(true);
+		//have user enter username of user they want to follow and check if it's valid
+		do {
+			System.out.println("Enter the username of the user you would like to follow: "); 
+			try {
+					username = in.readLine();
+					if(username.length() > 64 || username.length() == 0)  {
+						throw new ArithmeticException("Username cannot be empty and has to be less 64 characters or less.");
+					}
+					else {
+						break;
+					}
+				} catch(Exception e) {
+					System.out.println("Invalid input!");
+					continue;
+				}
+		} while(true); 
+		//check if the first username entered exists in the database 
+		try {
+				String query_user = "SELECT *\n FROM Users\n WHERE username = '" + username + "'and pwd = '" + password + "';";
+				if (esql.executeQuery(query_user) == 0) {
+					System.out.println("This user does not exist");
+				}
+				
+			} 
+			catch(Exception e) {
+				System.out.println(e.getMessage());
+			}
+		//check if the username to be followed exists in the database 	
+		try {
+				String query_user = "SELECT *\n FROM Users\n WHERE username = '" + following_usr + "';";
+				if (esql.executeQuery(query_user) == 0) {
+					System.out.println("This user does not exist");
+				}
+				
+			} 
+			catch(Exception e) {
+				System.out.println(e.getMessage());
+			}
+		//add a new entry into the sql Following table 
+		try{
+			String insert_query = "INSERT INTO Following (username, following_usr) VALUES ('" + username + "', '" + following_usr + "');";
+			esql.executeUpdate(insert_query); 
+		} 
+		catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+	}
+
+
 }
