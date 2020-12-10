@@ -41,12 +41,12 @@ import java.time.ZonedDateTime;
  *
  */
 
-public class Ticketmaster{
+public class Instagram{
 	//reference to physical database connection
 	private Connection _connection = null;
 	static BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 	
-	public Ticketmaster(String dbname, String dbport, String user, String passwd) throws SQLException {
+	public Instagram(String dbname, String dbport, String user, String passwd) throws SQLException {
 		System.out.print("Connecting to database...");
 		try{
 			// constructs the connection URL
@@ -225,12 +225,12 @@ public class Ticketmaster{
 	public static void main (String[] args) {
 		if (args.length != 3) {
 			System.err.println (
-				"Usage: " + "java [-classpath <classpath>] " + Ticketmaster.class.getName () +
+				"Usage: " + "java [-classpath <classpath>] " + Instagram.class.getName () +
 		            " <dbname> <port> <user>");
 			return;
 		}//end if
 		
-		Ticketmaster esql = null;
+		Instagram esql = null;
 		
 		try{
 			System.out.println("(1)");
@@ -249,23 +249,27 @@ public class Ticketmaster{
 			String dbport = args[1];
 			String user = args[2];
 			
-			esql = new Ticketmaster (dbname, dbport, user, "");
+			esql = new Instagram (dbname, dbport, user, "");
 			
-			userLogin();
+			//userLogin();
 
 			boolean keepon = true;
 
 			while(keepon){
 				System.out.println("MAIN MENU");
 				System.out.println("---------");
-				System.out.println("1. Print login");
+				System.out.println("1. Display feed");
+				System.out.println("2. View user photos");
+				System.out.println("3. Upload photos")
 				System.out.println("15. EXIT");
 				
 				/*
 				 * FOLLOW THE SPECIFICATION IN THE PROJECT DESCRIPTION
 				 */
 				switch (readChoice()){
-					case 1: printLogin(); break;
+					case 1: DisplayFeed(); break;
+					case 2: ViewUserPhotos(); break;
+					case 3: UploadPhotos(); break;
 					case 15: keepon = false; break;
 				}
 			}
@@ -301,42 +305,88 @@ public class Ticketmaster{
 	}
 	// end readChoice
 
-	public static void userLogin(Ticketmaster esql) {
-		String username;
-		String password;
-		String fname;
+	// public static void userLogin(Instagram esql) {
+	// 	String username;
+	// 	String password;
+	// 	String fname;
 
-		do{
+	// 	do{
+	// 		System.out.println("Username: ");
+	// 		username = in.readLine();
+	// 		System.out.println("Password: ");
+	// 		password = in.readLine();
+
+	// 		try {
+	// 			String query_user = "SELECT *\n FROM Users\n WHERE email = '" + username + "'and pwd = '" + password + "';";
+				
+	// 			if(esql.executeQuery(query_user) == 0) {
+	// 				System.out.println("Incorrect username and/or password");
+	// 				continue;
+	// 			} 
+	// 			else {
+	// 				String query_fname = "SELECT fname\n FROM Users\n WHERE email = '" + username + "'and pwd = '" + password + "';";
+	// 				fname = esql.executeQueryAndReturnResult(query_fname);
+	// 				System.out.println("Welcome back " + fname + "!");
+	// 				break;
+	// 			}
+
+	// 		} catch(Exception e) {
+	// 			System.out.println(e.getMessage());
+	// 			continue;
+	// 		}
+
+	// 	} while(true);
+
+	// }
+
+	// public static void printLogin() {
+	// 	System.out.println("Username is: " + username);
+	// 	System.out.println("Password is: " + password);
+	// }
+		public static void DisplayFeed(Instagram esql) {
+			String query_display = "SELECT *\n FROM Photos\n ORDER BY likes DESC;";
+			esql.executeQueryAndPrintResult(query_display);
+		}
+
+		public static void ViewUserPhotos(Instagram esql) {
+			String username;
+			String password;
 			System.out.println("Username: ");
 			username = in.readLine();
 			System.out.println("Password: ");
 			password = in.readLine();
 
 			try {
-				String query_user = "SELECT *\n FROM Users\n WHERE email = '" + username + "'and pwd = '" + password + "';";
-				
-				if(esql.executeQuery(query_user) == 0) {
-					System.out.println("Incorrect username and/or password");
-					continue;
-				} 
-				else {
-					String query_fname = "SELECT fname\n FROM Users\n WHERE email = '" + username + "'and pwd = '" + password + "';";
-					fname = esql.executeQueryAndReturnResult(query_fname);
-					System.out.println("Welcome back " + fname + "!");
-					break;
+				String query_user = "SELECT *\n FROM Users\n WHERE username = '" + username + "'and pwd = '" + password + "';";
+				if (esql.executeQuery(query_user) == 0) {
+					System.out.println("This user does not exist");
 				}
-
+				
 			} catch(Exception e) {
 				System.out.println(e.getMessage());
-				continue;
 			}
 
-		} while(true);
+			String query_usr_photos = "SELECT *\n FROM Photos WHERE username = '" + username + "';";
 
-	}
+		}
 
-	public static void printLogin() {
-		System.out.println("Username is: " + username);
-		System.out.println("Password is: " + password);
-	}
+		// public static void UploadPhotos(Instagram esql) {
+		// 	String username;
+		// 	String password;
+		// 	System.out.println("Username: ");
+		// 	username = in.readLine();
+		// 	System.out.println("Password: ");
+		// 	password = in.readLine();
+
+		// 	try {
+		// 		String query_user = "SELECT *\n FROM Users\n WHERE username = '" + username + "'and pwd = '" + password + "';";
+		// 		if (esql.executeQuery(query_user) == 0) {
+		// 			System.out.println("This user does not exist");
+		// 		}
+				
+		// 	} catch(Exception e) {
+		// 		System.out.println(e.getMessage());
+		// 	}
+
+		// }
 }
