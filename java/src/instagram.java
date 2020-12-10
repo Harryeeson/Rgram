@@ -302,8 +302,8 @@ public class Ticketmaster{
 	// end readChoice
 
 	public static void userLogin(Ticketmaster esql) {
-		public static string username;
-		public static string password;
+		String username;
+		String password;
 		String fname;
 
 		do{

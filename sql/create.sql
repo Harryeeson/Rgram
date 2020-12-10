@@ -9,7 +9,7 @@ CREATE TABLE Users (
     fname VARCHAR(32) NOT NULL,
     lname VARCHAR(32) NOT NULL,
     pwd CHAR(64) NOT NULL,
-    PRIMARY KEY(userID)
+    PRIMARY KEY(username)
 );
 
 CREATE TABLE Photo (
