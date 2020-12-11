@@ -245,7 +245,7 @@ public class Instagram{
 			CheckLogin(esql);
 
 			while(keepon){
-				System.out.println("MAIN MENU");
+				System.out.println("\nMAIN MENU");
 				System.out.println("---------");
 				System.out.println("1. Display news feed");
 				System.out.println("2. Search for user");
@@ -432,7 +432,7 @@ public class Instagram{
 				else {
 					Instagram.username = uname;
 					Instagram.password = pwd;
-					System.out.println("\nWelcome back " + uname + "!\n");
+					System.out.println("\nWelcome back " + uname + "!");
 					break;
 				}
 				
@@ -492,18 +492,20 @@ public class Instagram{
 			System.out.println("Would you like to view comments for this photo? (Y/N)");
 			try {
 				choice = in.readLine();
-				if(choice == 'Y') {
+				if(choice.equals("Y")) {
 					String comment_query = "SELECT commentor, comments FROM PhotoComments WHERE pid = '" + photo_id + "';";
 					esql.executeQueryAndPrintResult(comment_query);
 					break;
 				}
-				else if(choice == 'N') {
+				else if(choice.equals("N")) {
 					break;
 				}
 				else {
 					System.out.println("Invalid choice, please try again.");
 					continue;
 				}
+			} catch(Exception e) {
+				System.out.println(e.getMessage());
 			}
 		} while(true);
 
