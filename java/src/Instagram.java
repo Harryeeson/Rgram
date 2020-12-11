@@ -356,7 +356,7 @@ public class Instagram{
 			} while(true);
 
 			try {
-				String query_pid = "SELECT pid\n FROM Photo\n WHERE username = '" + author + "'and title = '" + photo_title + "';";
+				String query_pid = "SELECT pid FROM Photo WHERE username = '" + author + "'and title = '" + photo_title + "';";
 				pid_list = esql.executeQueryAndReturnResult(query_pid);
 				if (pid_list.size() == 0) {
 					System.out.println("The user does not have this photo, or this photo is not posted by this user");
@@ -424,7 +424,7 @@ public class Instagram{
 			} while(true);
 
 			try {
-				String query_user = "SELECT *\n FROM Users\n WHERE username = '" + uname + "'and pwd = '" + pwd + "';";
+				String query_user = "SELECT * FROM Users WHERE username = '" + uname + "'and pwd = '" + pwd + "';";
 				if (esql.executeQuery(query_user) == 0) {
 					System.out.println("This user does not exist. Please try again.");
 					continue;
@@ -432,7 +432,7 @@ public class Instagram{
 				else {
 					Instagram.username = uname;
 					Instagram.password = pwd;
-					System.out.println("Welcome back " + uname + "!");
+					System.out.println("\nWelcome back " + uname + "!\n");
 					break;
 				}
 				
@@ -449,7 +449,7 @@ public class Instagram{
 
 	public static void DisplayFeed(Instagram esql) {	// 1
 		try {
-			String query_display = "SELECT *\n FROM Photo\n ORDER BY likes DESC;";
+			String query_display = "SELECT * FROM Photo ORDER BY likes DESC;";
 			if(esql.executeQueryAndPrintResult(query_display) == 0) {
 				System.out.println("Nothing on feed to display");
 			}
@@ -475,17 +475,37 @@ public class Instagram{
 	}
 
 	public static void ViewStatsOfPhoto(Instagram esql) {	// 6
+		String choice;
 		Integer photo_id;
 
 		photo_id = FindPID(esql);
 
 		try {
-			String photo_query = "SELECT * from Photo WHERE pid = '" + photo_id + "';";
+			String photo_query = "SELECT P.username, P.title, P.likes, P.dislikes, COUNT(C.comments) AS NumberOfComments, P.pdate FROM Photo P LEFT JOIN PhotoComments C ON P.pid = C.pid WHERE P.pid = '" + photo_id + "' GROUP BY P.username, P.title, P.likes, P.dislikes, P.pdate;";
 			esql.executeQueryAndPrintResult(photo_query);
 
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
+
+		do {
+			System.out.println("Would you like to view comments for this photo? (Y/N)");
+			try {
+				choice = in.readLine();
+				if(choice == 'Y') {
+					String comment_query = "SELECT commentor, comments FROM PhotoComments WHERE pid = '" + photo_id + "';";
+					esql.executeQueryAndPrintResult(comment_query);
+					break;
+				}
+				else if(choice == 'N') {
+					break;
+				}
+				else {
+					System.out.println("Invalid choice, please try again.");
+					continue;
+				}
+			}
+		} while(true);
 
 	}
 
@@ -660,6 +680,7 @@ public class Instagram{
 		}
 
 		photo_title = photo_list.get(0).get(0);
+		System.out.println(photo_title);
 
 		//insert hdfs function to download photo
 		//title of photo is stored in photo_title
