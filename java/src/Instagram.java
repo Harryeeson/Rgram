@@ -272,7 +272,7 @@ public class Instagram{
 					case 5: SearchForPhoto(esql); break;
 					case 6: ViewStatsOfPhoto(esql); break;
 					case 7: CommentPhoto(esql);	break;
-					case 8: TagPhoto(esql);		break;
+					case 8: TagPhoto(esql);	break;
 					case 9:  UploadPhoto(esql); break;
 					case 10: DownloadPhoto(esql); break;
 					case 11: ListPopularPhotos(esql); break;
@@ -534,7 +534,163 @@ public class Instagram{
 	}
 
 	public static void SearchForPhoto(Instagram  esql) {	// 5
+		String tag;
+		String earliest_date = "";
+		String latest_date = "";
+		Integer min;
+		Integer max;
 
+		 //Search for photo by # of likes, dislikes, tags, date, publishing user
+		System.out.println("What would you like to search by?: ");
+		System.out.println("1. Publishing user");
+		System.out.println("2. Range of likes");
+		System.out.println("3. Range of dislikes");
+		System.out.println("4. Tags");
+		System.out.println("5. Date range");
+		
+		switch (readChoice()) {
+			case 1: // publishing user
+				do {
+					System.out.println("Enter the publisher's username: ");
+					try {
+						author = in.readLine();
+						if(author.length() > 64 || author.length() == 0)  {
+							System.out.println("Author username cannot be empty and has to be less 64 characters or less.");
+							continue;
+						}
+						else {
+							break;
+						}
+					} catch(Exception e) {
+						System.out.println("Invalid input!");
+						continue;
+					}
+				} while(true);
+
+				try {
+					String query_user = "SELECT title FROM Photo WHERE username = '" + author + "';";
+					if (esql.executeQuery(query_user) == 0) {
+						System.out.println("This user do not have any photos");
+						continue;
+					}
+					else{
+						break; 
+					}	
+				}
+				catch(Exception e) {
+					System.out.println(e.getMessage());
+					continue; 
+				}
+				break;
+
+			case 2: // range of likes
+				do {
+					try {
+						System.out.println("What is the minimum amount of likes?: ");
+						min = in.readLine();
+						System.out.println("What is the maximum amount of likes?: ");
+						max = in.readLine();
+						if(min < 0 || min > max) {
+							System.out.println("Minimum value cannot be negative or greater than the maximum value. Please try again.");
+							continue;
+						}
+						else {
+							break;
+						}
+					} catch(Exception e) {
+						System.out.println(e.getMessage());
+					}
+				} while(true);
+
+				try {
+					String query = "SELECT username, title FROM Photo WHERE likes >= '" + min + "' AND likes <= '" + max + "';";
+					esql.executeQueryAndPrintResult(query);
+				} catch(Exception e) {
+					System.out.println(e.getMessage());
+				}
+				break;
+
+			case 3:  // range of dislikes
+				do {
+					try {
+						System.out.println("What is the minimum amount of dislikes?: ");
+						min = in.readLine();
+						System.out.println("What is the maximum amount of dislikes?: ");
+						max = in.readLine();
+						if(min < 0 || min > max) {
+							System.out.println("Minimum value cannot be negative or greater than the maximum value. Please try again.");
+							continue;
+						}
+						else {
+							break;
+						}
+					} catch(Exception e) {
+						System.out.println(e.getMessage());
+					}
+				} while(true);
+
+				try {
+					String query = "SELECT username, title FROM Photo WHERE dislikes >= '" + min + "' AND dislikes <= '" + max + "';";
+					esql.executeQueryAndPrintResult(query);
+				} catch(Exception e) {
+					System.out.println(e.getMessage());
+				}
+				break;
+
+			case 4:  // Tags
+				do {
+					System.out.println("Tag: ");
+					try {
+						tag = in.readLine();
+						if(tag.length() > 128 || tag.length() == 0)  {
+							System.out.println("Tag cannot be empty and has to be less 128 characters or less.");
+							continue;
+						}
+						else {
+							break;
+						}
+					} catch(Exception e) {
+						System.out.println("Invalid input!");
+						continue;
+					}
+				} while(true);
+
+				try {
+					String query = "SELECT P.username, P.title FROM Photo P AND Tags T WHERE T.tagging = '" + tag + "' AND T.pid = P.pid;";
+					esql.executeQueryAndPrintResult(query);
+				} catch(Exception e) {
+					System.out.println(e.getMessage());
+				}
+				break;
+
+			case 5: // Date range  XX/XX/XXXX
+				do {
+					try {
+						System.out.println("What is the earliest date?: ");
+						earliest_date = in.readLine();
+						System.out.println("What is the latest date?: ");
+						latest_date = in.readLine();
+						if((earliest_date.length() > 10 || earliest_date.length() == 0) || (latest_date.length() > 10 || latest_date.length() == 0)) {
+							System.out.println("Dates cannot be more than 10 characters or empty. Please try again.");
+							continue;
+						}
+						else {
+							break;
+						}
+					} catch(Exception e) {
+						System.out.println(e.getMessage());
+					}
+				} while(true);
+
+				try {
+					String query = "SELECT username, title, pdate FROM Photo WHERE pdate >= '" + earliest_date + "' AND pdate <= '" + latest_date + "';";
+					esql.executeQueryAndPrintResult(query);
+				} catch(Exception e) {
+					System.out.println(e.getMessage());
+				}
+				break;
+		}
+		 
 	}
 
 	public static void ViewStatsOfPhoto(Instagram esql) {	// 6
