@@ -44,9 +44,10 @@ CREATE TABLE Tags (
 );
 
 CREATE TABLE Followers (
+    fid BIGINT NOT NULL,
     username VARCHAR(64) NOT NULL,
     following_usr VARCHAR(64) NOT NULL,
-    PRIMARY KEY(following_usr),
+    PRIMARY KEY(fid),
     FOREIGN KEY(username) REFERENCES Users(username)
 ); 
 
@@ -91,6 +92,7 @@ FROM 'Tags.csv'
 WITH DELIMITER ',';
 
 COPY Followers (
+    fid,
     username,
     following_usr
 )

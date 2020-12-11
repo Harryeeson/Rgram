@@ -463,7 +463,9 @@ public class Instagram{
 	}
 
 	public static void FollowUser(Instagram esql)  {	// 3
+		List<List<String>> fid_list = new ArrayList<List<String>>();
 		String following_usr;
+		Integer follower_id;
 
 		do{
 			do {
@@ -500,9 +502,25 @@ public class Instagram{
 			}
 		} while(true); 
 
+		try {
+			String fid_query = "SELECT max(fid) from Followers";
+
+			fid_list = esql.executeQueryAndReturnResult(fid_query);
+
+			if (fid_list.size() == 0) {
+				System.out.println("This does not exist"); 
+				return;
+			}
+			
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+		follower_id = Integer.parseInt(fid_list.get(0).get(0)) + 1;
+
 		//add a new entry into the sql Following table 
 		try{
-			String insert_query = "INSERT INTO Following (username, following_usr) VALUES ('" + username + "', '" + following_usr + "');";
+			String insert_query = "INSERT INTO Followers (fid, username, following_usr) VALUES ('" + follower_id + "', '" + username + "', '" + following_usr + "');";
 			esql.executeUpdate(insert_query); 
 		} 
 		catch(Exception e) {
