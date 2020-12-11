@@ -640,7 +640,7 @@ public class Instagram{
 
 	public static void DownloadPhoto(Instagram esql) {	// 10
 		List<List<String>> photo_list = new ArrayList<List<String>>();
-		String photot_title;
+		String photo_title;
 		Integer photo_id;
 
 		photo_id = FindPID(esql);
@@ -659,7 +659,7 @@ public class Instagram{
 			System.out.println(e.getMessage());
 		}
 
-		photo_title = photo_id_list.get(0).get(0));
+		photo_title = photo_list.get(0).get(0);
 
 		//insert hdfs function to download photo
 		//title of photo is stored in photo_title
