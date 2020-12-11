@@ -512,7 +512,7 @@ public class Instagram{
 		cid = Integer.parseInt(cid_list.get(0).get(0)) + 1;
 
 		try {
-			String query = "INSERT INTO PhotoComments (cid, pid, commentor, comments) VALUES ('" + cid + "', '" + pid + "', '" + username + "', '" + comment + "');";
+			String query = "INSERT INTO PhotoComments (cid, pid, commentor, comments) VALUES ('" + cid + "', '" + comment_pid + "', '" + username + "', '" + comment + "');";
 			esql.executeUpdate(query);
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
