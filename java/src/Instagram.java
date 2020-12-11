@@ -463,6 +463,51 @@ public class Instagram{
 	}
 
 	public static void FollowUser(Instagram esql)  {	// 3
+		String following_usr;
+
+		do{
+			do {
+				System.out.println("Enter the username of the user you would like to follow: "); 
+				try {
+						following_usr = in.readLine();
+						if(following_usr.length() > 64 || following_usr.length() == 0)  {
+							System.out.println("Username cannot be empty and has to be less 64 characters or less.");
+							continue;
+						}
+						else {
+							break;
+						}
+					} catch(Exception e) {
+						System.out.println(e.getMessage());
+						continue;
+					}
+			} while(true); 
+
+			//check if the username to be followed exists in the database 	
+			try {
+				String query_user = "SELECT * FROM Users WHERE username = '" + following_usr + "';";
+				if (esql.executeQuery(query_user) == 0) {
+					System.out.println("This user does not exist");
+					continue;
+				}
+				else{
+					break; 
+				}	
+			} 
+			catch(Exception e) {
+				System.out.println(e.getMessage());
+				continue; 
+			}
+		} while(true); 
+
+		//add a new entry into the sql Following table 
+		try{
+			String insert_query = "INSERT INTO Following (username, following_usr) VALUES ('" + username + "', '" + following_usr + "');";
+			esql.executeUpdate(insert_query); 
+		} 
+		catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
 
 	}
 

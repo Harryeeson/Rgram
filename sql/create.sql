@@ -1,4 +1,5 @@
-﻿DROP TABLE IF EXISTS PhotoComments;
+﻿DROP TABLE IF EXISTS Followers;
+DROP TABLE IF EXISTS PhotoComments;
 DROP TABLE IF EXISTS Tags;
 DROP TABLE IF EXISTS Photo;
 DROP TABLE IF EXISTS Users;
@@ -42,11 +43,14 @@ CREATE TABLE Tags (
     FOREIGN KEY(pid) REFERENCES Photo(pid)
 );
 
--- Relations
+CREATE TABLE Followers (
+    username VARCHAR(64) NOT NULL,
+    following_usr VARCHAR(64) NOT NULL,
+    PRIMARY KEY(following_usr),
+    FOREIGN KEY(username) REFERENCES Users(username)
+); 
 
-----------------------------
--- INSERT DATA STATEMENTS --
-----------------------------
+-- Relations
 
 COPY Users (
     userID,
@@ -84,4 +88,11 @@ COPY Tags (
     tagging
 )
 FROM 'Tags.csv'
+WITH DELIMITER ',';
+
+COPY Followers (
+    username,
+    following_usr
+)
+FROM 'Followers.csv'
 WITH DELIMITER ',';
