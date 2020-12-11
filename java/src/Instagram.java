@@ -20,21 +20,17 @@ import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
-
-/*public class UserLogin {
-	public static String username;
-	public static String password;
-} */
-
-/**
+/*
  * This class defines a simple embedded SQL utility class that is designed to
  * work with PostgreSQL JDBC drivers.
  *
  */
 
 public class Instagram{
+	//define global variables
 	public static String username;
 	public static String password;
+
 	//reference to physical database connection
 	private Connection _connection = null;
 	static BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
@@ -251,11 +247,18 @@ public class Instagram{
 			while(keepon){
 				System.out.println("MAIN MENU");
 				System.out.println("---------");
-				System.out.println("1. Display feed");
-				System.out.println("2. View user photos");
-				System.out.println("3. Upload photos");
-				System.out.println("5. Comment on photo");
-				System.out.println("6. Add a tag to a photo");
+				System.out.println("1. Display news feed");
+				System.out.println("2. Search for user");
+				System.out.println("3. Follow user");
+				System.out.println("4. List popular users");
+				System.out.println("5. Search for photo");
+				System.out.println("6. View statistics of photo");
+				System.out.println("7. Comment on photo");
+				System.out.println("8. Add tag or tag user to photo");
+				System.out.println("9. Upload photo");
+				System.out.println("10. Download photo");
+				System.out.println("11. List most popular photos");
+				//System.out.println("12. View user photos");
 				System.out.println("15. EXIT");
 				
 				/*
@@ -263,10 +266,17 @@ public class Instagram{
 				 */
 				switch (readChoice()){
 					case 1: DisplayFeed(esql); break;
-					case 2: ViewUserPhotos(esql); break;
-					case 3: UploadPhotos(esql); break;
-					case 5: CommentPhoto(esql);	break;
-					case 6: TagPhoto(esql);		break;
+					case 2: SearchForUser(esql); break;
+					case 3: FollowUser(esql); break;
+					case 4: ListPopularUsers(esql); break;
+					case 5: SearchForPhoto(esql); break;
+					case 6: ViewStatsOfPhoto(esql); break;
+					case 7: CommentPhoto(esql);	break;
+					case 8: TagPhoto(esql);		break;
+					case 9:  UploadPhoto(esql); break;
+					case 10: DownloadPhoto(esql); break;
+					case 11: ListPopularPhotos(esql); break;
+					//case 12: ViewUserPhotos(esql); break;
 					case 15: keepon = false; break;
 				}
 			}
@@ -365,6 +375,11 @@ public class Instagram{
 		String uname;
 		String pwd;
 
+		System.out.println("      R'Gram      ");
+		System.out.println("------------------");
+		System.out.println("Login");
+		System.out.println("---------");
+
 		do {
 			do {
 				System.out.println("Username: ");
@@ -403,7 +418,7 @@ public class Instagram{
 			try {
 				String query_user = "SELECT *\n FROM Users\n WHERE username = '" + uname + "'and pwd = '" + pwd + "';";
 				if (esql.executeQuery(query_user) == 0) {
-					System.out.println("This user does not exist");
+					System.out.println("This user does not exist. Please try again.");
 					continue;
 				}
 				else {
@@ -416,12 +431,15 @@ public class Instagram{
 			} catch(Exception e) {
 				System.out.println(e.getMessage());
 			}
-		}while(true);
-		System.out.println("Username is: " + Instagram.username);
-		System.out.println("Password is: " + Instagram.password);
+
+		} while(true);
 	}
 
-	public static void DisplayFeed(Instagram esql) {
+	/* =============================================================================
+								BEGIN MENU FUNCTIONS
+	   ============================================================================= */
+
+	public static void DisplayFeed(Instagram esql) {	// 1
 		try {
 			String query_display = "SELECT *\n FROM Photo\n ORDER BY likes DESC;";
 			if(esql.executeQueryAndPrintResult(query_display) == 0) {
@@ -430,268 +448,35 @@ public class Instagram{
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
- 	}
-
-	public static void ViewUserPhotos(Instagram esql) {
-		String username;
-		String password;
-		do {
-			System.out.println("Username: ");
-			try {
-				username = in.readLine();
-				if(username.length() > 64 || username.length() == 0)  {
-					throw new ArithmeticException("Username cannot be empty and has to be less 64 characters or less.");
-				}
-				else {
-					break;
-				}
-			} catch(Exception e) {
-				System.out.println("Invalid input!");
-				continue;
-			}
-		} while(true);
-		do {
-			System.out.println("Password: ");
-			try {
-				password = in.readLine();
-				if(password.length() > 64 || password.length() == 0)  {
-					throw new ArithmeticException("Password cannot be empty and has to be less 64 characters or less.");
-				}
-				else {
-					break;
-				}
-			} catch(Exception e) {
-				System.out.println("Invalid input!");
-				continue;
-			}
-		} while(true);
-
-		try {
-			String query_user = "SELECT *\n FROM Users\n WHERE username = '" + username + "'and pwd = '" + password + "';";
-			if (esql.executeQuery(query_user) == 0) {
-				System.out.println("This user does not exist");
-			}
-			
-		} catch(Exception e) {
-			System.out.println(e.getMessage());
-		}
-			
-		try {
-			String query_usr_photos = "SELECT *\n FROM Photo WHERE username = '" + username + "';";
-			if(esql.executeQueryAndPrintResult(query_usr_photos) == 0) {
-				System.out.println("Photos DNE");
-				return;
-			}
-		} catch(Exception e) {
-			System.out.println(e.getMessage());
-		}
+	 }
+	 
+	public static void SearchForUser(Instagram esql) {	// 2
 
 	}
 
-	public static void UploadPhotos(Instagram esql) {
-		String username;
-		String password;
-		String photo_title;
-		
-		do {
-			System.out.println("Username: ");
-			try {
-				username = in.readLine();
-				if(username.length() > 64 || username.length() == 0)  {
-					throw new ArithmeticException("Username cannot be empty and has to be less 64 characters or less.");
-				}
-				else {
-					break;
-				}
-			} catch(Exception e) {
-				System.out.println("Invalid input!");
-				continue;
-			}
-		} while(true);
+	public static void FollowUser(Instagram esql)  {	// 3
 
-		do {
-			System.out.println("Password: ");
-			try {
-				password = in.readLine();
-				if(password.length() > 64 || password.length() == 0)  {
-					throw new ArithmeticException("Password cannot be empty and has to be less 64 characters or less.");
-				}
-				else {
-					break;
-				}
-			} catch(Exception e) {
-				System.out.println("Invalid input!");
-				continue;
-			}
-		} while(true);
-
-		try {
-			String query_user = "SELECT *\n FROM Users\n WHERE username = '" + username + "'and pwd = '" + password + "';";
-			if (esql.executeQuery(query_user) == 0) {
-				System.out.println("This user does not exist");
-			}
-			
-		} catch(Exception e) {
-			System.out.println(e.getMessage());
-		}
-
-		do {
-			System.out.println("Enter title for photo: ");
-			try {
-				photo_title = in.readLine();
-				if(photo_title.length() > 128 || photo_title.length() == 0)  {
-					throw new ArithmeticException("Photo title cannot be empty and has to be less 128 characters or less.");
-				}
-				else {
-					break;
-				}
-			} catch(Exception e) {
-				System.out.println("Invalid input!");
-				continue;
-			}
-		} while(true);
-
-		ZonedDateTime zone_date_time = ZonedDateTime.now();
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ssx");
-		String zdt = dtf.format(zone_date_time);
-
-		List<List<String>> photo_id_list = new ArrayList<List<String>>();
-
-		try {
-			String photo_id_query = "SELECT max(pid) from Photo";
-
-			photo_id_list = esql.executeQueryAndReturnResult(photo_id_query);
-
-			if (photo_id_list.size() == 0) {
-				System.out.println("This does not exist"); 
-				return;
-			}
-			
-		} catch(Exception e) {
-			System.out.println(e.getMessage());
-		}
-		Integer photo_id = Integer.parseInt(photo_id_list.get(0).get(0)) + 1;
-		System.out.println("Here is the your PID: " + photo_id);
-		try {
-			String insert_query = "INSERT INTO Photo (pid, username, title, likes, dislikes, pdate) VALUES ('" + photo_id + "', '" + username + "', '" + photo_title + "', '0', '0', '" + zdt + "');";
-			esql.executeUpdate(insert_query);
-		} catch(Exception e) {
-			System.out.println(e.getMessage());
-		}
 	}
 
-	public static void CommentPhoto(Instagram esql) {
-		String username;
-		String password;
-		String author;
-		String photo_title;
-		String comment;
+	public static void ListPopularUsers(Instagram esql) {	// 4
 
-		do {
-			System.out.println("Username: ");
-			try {
-				username = in.readLine();
-				if(username.length() > 64 || username.length() == 0)  {
-					throw new ArithmeticException("Username cannot be empty and has to be less 64 characters or less.");
-				}
-				else {
-					break;
-				}
-			} catch(Exception e) {
-				System.out.println("Invalid input!");
-				continue;
-			}
-		} while(true);
+	}
 
-		do {
-			System.out.println("Password: ");
-			try {
-				password = in.readLine();
-				if(password.length() > 64 || password.length() == 0)  {
-					throw new ArithmeticException("Password cannot be empty and has to be less 64 characters or less.");
-				}
-				else {
-					break;
-				}
-			} catch(Exception e) {
-				System.out.println("Invalid input!");
-				continue;
-			}
-		} while(true);
+	public static void SearchForPhoto(Instagram  esql) {	// 5
 
-		try {
-			String query_user = "SELECT *\n FROM Users\n WHERE username = '" + username + "'and pwd = '" + password + "';";
-			if (esql.executeQuery(query_user) == 0) {
-				System.out.println("This user does not exist");
-			}
-			
-		} catch(Exception e) {
-			System.out.println(e.getMessage());
-		}
+	}
 
-		do {
-			System.out.println("Enter the username who posted the photo: ");
-			try {
-				author = in.readLine();
-				if(author.length() > 64 || author.length() == 0)  {
-					throw new ArithmeticException("Author username cannot be empty and has to be less 64 characters or less.");
-				}
-				else {
-					break;
-				}
-			} catch(Exception e) {
-				System.out.println("Invalid input!");
-				continue;
-			}
-		} while(true);
+	public static void ViewStatsOfPhoto(Instagram esql) {	// 6
 
-		do {
-			System.out.println("Enter the title of the photo you would like to comment on: ");
-			try {
-				photo_title = in.readLine();
-				if(photo_title.length() > 128 || photo_title.length() == 0)  {
-					throw new ArithmeticException("Username cannot be empty and has to be less 128 characters or less.");
-				}
-				else {
-					break;
-				}
-			} catch(Exception e) {
-				System.out.println("Invalid input!");
-				continue;
-			}
-		} while(true);
+	}
 
-		List<List<String>> pid_list = new ArrayList<List<String>>();
-		try {
-			String query_pid = "SELECT pid\n FROM Photo\n WHERE username = '" + author + "'and title = '" + photo_title + "';";
-			pid_list = esql.executeQueryAndReturnResult(query_pid);
-			if (pid_list.size() == 0) {
-				System.out.println("The user does not have this photo, or this photo is not posted by this user");
-				return;
-			}
-			
-		} catch(Exception e) {
-			System.out.println(e.getMessage());
-		}
-
-		Integer pid = Integer.parseInt(pid_list.get(0).get(0));
-
+	public static void CommentPhoto(Instagram esql) {	// 7
 		List<List<String>> cid_list = new ArrayList<List<String>>();
+		String comment;
+		Integer comment_pid;
+		Integer cid;
 
-		try {
-			String cid_query = "SELECT max(cid) from PhotoComments";
-
-			cid_list = esql.executeQueryAndReturnResult(cid_query);
-
-			if (cid_list.size() == 0) {
-				System.out.println("This does not exist"); 
-				return;
-			}
-			
-		} catch(Exception e) {
-			System.out.println(e.getMessage());
-		}
-		Integer cid = Integer.parseInt(cid_list.get(0).get(0)) + 1;
+		comment_pid = FindPID(esql);
 
 		do {
 			System.out.println("Enter your comment: ");
@@ -711,8 +496,23 @@ public class Instagram{
 		} while(true);
 
 		try {
-			String query = "INSERT INTO PhotoComments (cid, pid, commentor, comments) VALUES ('" + cid + "', '" + pid + "', '" + username
-							 + "', '" + comment + "');";
+			String cid_query = "SELECT max(cid) from PhotoComments";
+
+			cid_list = esql.executeQueryAndReturnResult(cid_query);
+
+			if (cid_list.size() == 0) {
+				System.out.println("This does not exist"); 
+				return;
+			}
+			
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+		cid = Integer.parseInt(cid_list.get(0).get(0)) + 1;
+
+		try {
+			String query = "INSERT INTO PhotoComments (cid, pid, commentor, comments) VALUES ('" + cid + "', '" + pid + "', '" + username + "', '" + comment + "');";
 			esql.executeUpdate(query);
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
@@ -720,7 +520,7 @@ public class Instagram{
 
 	}
 
-	public static void TagPhoto(Instagram esql) {
+	public static void TagPhoto(Instagram esql) {	// 8
 		List<List<String>> tid_list = new ArrayList<List<String>>();
 		String tag;
 		Integer tag_pid;
@@ -768,5 +568,78 @@ public class Instagram{
 			System.out.println(e.getMessage());
 		}
 	}
+
+	public static void UploadPhoto(Instagram esql) {	// 9
+		List<List<String>> photo_id_list = new ArrayList<List<String>>();
+		String photo_title;
+		Integer photo_id;
+		
+		do {
+			System.out.println("Enter title for photo: ");
+			try {
+				photo_title = in.readLine();
+				if(photo_title.length() > 128 || photo_title.length() == 0)  {
+					throw new ArithmeticException("Photo title cannot be empty and has to be less 128 characters or less.");
+				}
+				else {
+					break;
+				}
+			} catch(Exception e) {
+				System.out.println("Invalid input!");
+				continue;
+			}
+		} while(true);
+
+		ZonedDateTime zone_date_time = ZonedDateTime.now();
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ssx");
+		String zdt = dtf.format(zone_date_time);
+
+		try {
+			String photo_id_query = "SELECT max(pid) from Photo";
+
+			photo_id_list = esql.executeQueryAndReturnResult(photo_id_query);
+
+			if (photo_id_list.size() == 0) {
+				System.out.println("This does not exist"); 
+				return;
+			}
+			
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+		photo_id = Integer.parseInt(photo_id_list.get(0).get(0)) + 1;
+
+		try {
+			String insert_query = "INSERT INTO Photo (pid, username, title, likes, dislikes, pdate) VALUES ('" + photo_id + "', '" + Instagram.username + "', '" + photo_title + "', '0', '0', '" + zdt + "');";
+			esql.executeUpdate(insert_query);
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
+	public static void DownloadPhoto(Instagram esql) {	// 10
+
+	}
+
+	public static void ListPopularPhotos(Instagram esql) {	//11
+
+	}
+
+	// public static void ViewUserPhotos(Instagram esql) {
+	// 	String username;
+	// 	String password;
+			
+	// 	try {
+	// 		String query_usr_photos = "SELECT *\n FROM Photo WHERE username = '" + Instagram.username + "';";
+	// 		if(esql.executeQueryAndPrintResult(query_usr_photos) == 0) {
+	// 			System.out.println("Photos DNE");
+	// 			return;
+	// 		}
+	// 	} catch(Exception e) {
+	// 		System.out.println(e.getMessage());
+	// 	}
+
+	// }
 
 }
