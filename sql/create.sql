@@ -1,24 +1,45 @@
-﻿DROP TABLE IF EXISTS Photo;
+﻿DROP TABLE IF EXISTS PhotoComments;
+DROP TABLE IF EXISTS Tags;
+DROP TABLE IF EXISTS Photo;
 DROP TABLE IF EXISTS Users;
 
 -- Entities
 
 CREATE TABLE Users (
     userID BIGINT NOT NULL,
+    username VARCHAR(64) NOT NULL,
     fname VARCHAR(32) NOT NULL,
     lname VARCHAR(32) NOT NULL,
-    PRIMARY KEY(userID)
+    pwd VARCHAR(64) NOT NULL,
+    PRIMARY KEY(username)
 );
 
 CREATE TABLE Photo (
     pid BIGINT NOT NULL,
-    userID BIGINT NOT NULL,
+    username VARCHAR(64) NOT NULL,
     title CHAR(128) NOT NULL,
     likes BIGINT NOT NULL,
     dislikes BIGINT NOT NULL, 
     pdate DATE NOT NULL,
-    PRIMARY KEY (pid),
-    FOREIGN KEY (userID) REFERENCES Users(userID)
+    PRIMARY KEY(pid),
+    FOREIGN KEY(username) REFERENCES Users(username)
+);
+
+CREATE TABLE PhotoComments (
+    cid BIGINT NOT NULL,
+    pid BIGINT NOT NULL,
+    commentor VARCHAR(64) NOT NULL,
+    comments VARCHAR(128) NOT NULL,
+    PRIMARY KEY(cid),
+    FOREIGN KEY(pid) REFERENCES Photo(pid)
+);
+
+CREATE TABLE Tags (
+    tid BIGINT NOT NULL,
+    pid BIGINT NOT NULL,
+    tagging VARCHAR(128) NOT NULL,
+    PRIMARY KEY(tid),
+    FOREIGN KEY(pid) REFERENCES Photo(pid)
 );
 
 -- Relations
@@ -29,19 +50,38 @@ CREATE TABLE Photo (
 
 COPY Users (
     userID,
+    username,
     fname,
-    lname
+    lname,
+    pwd
 )
 FROM 'Users.csv'
 WITH DELIMITER ',';
 
 COPY Photo (
     pid,
-    userID,	
+    username,	
     title,
     likes,
     dislikes,
     pdate	
 )
 FROM 'Photo.csv'
+WITH DELIMITER ',';
+
+COPY PhotoComments (
+    cid,
+    pid,
+    commentor,
+    comments
+)
+FROM 'PhotoComments.csv'
+WITH DELIMITER ',';
+
+COPY Tags (
+    tid,
+    pid,
+    tagging
+)
+FROM 'Tags.csv'
 WITH DELIMITER ',';
