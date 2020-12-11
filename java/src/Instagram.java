@@ -21,10 +21,10 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 
-public class UserLogin {
+/*public class UserLogin {
 	public static String username;
 	public static String password;
-}
+} */
 
 /**
  * This class defines a simple embedded SQL utility class that is designed to
@@ -33,6 +33,8 @@ public class UserLogin {
  */
 
 public class Instagram{
+	public static String username;
+	public static String password;
 	//reference to physical database connection
 	private Connection _connection = null;
 	static BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
@@ -405,16 +407,18 @@ public class Instagram{
 					continue;
 				}
 				else {
-					UserLogin.username = uname;
-					UserLogin.password = pwd;
-					System.out.println("Welcome back " + uname + "!")
+					Instagram.username = uname;
+					Instagram.password = pwd;
+					System.out.println("Welcome back " + uname + "!");
 					break;
 				}
 				
 			} catch(Exception e) {
 				System.out.println(e.getMessage());
 			}
-		}
+		}while(true);
+		System.out.println("Username is: " + Instagram.username);
+		System.out.println("Password is: " + Instagram.password);
 	}
 
 	public static void DisplayFeed(Instagram esql) {
@@ -694,7 +698,7 @@ public class Instagram{
 			try {
 				comment = in.readLine();
 				if(comment.length() > 128 || comment.length() == 0)  {
-					throw new ArithmeticException("Comment cannot be empty and has to be less 128 characters or less.");
+					System.out.println("Comment cannot be empty and has to be less 128 characters or less.");
 					continue;
 				}
 				else {
@@ -729,7 +733,7 @@ public class Instagram{
 			try {
 				tag = in.readLine();
 				if(tag.length() > 128 || tag.length() == 0)  {
-					throw new ArithmeticException("Tag cannot be empty and has to be less 128 characters or less.");
+					System.out.println("Tag cannot be empty and has to be less 128 characters or less.");
 					continue;
 				}
 				else {
@@ -742,7 +746,7 @@ public class Instagram{
 		} while(true);
 
 		try {
-			String tid_query = "SELECT max(cid) from PhotoComments";
+			String tid_query = "SELECT max(tid) from Tags";
 
 			tid_list = esql.executeQueryAndReturnResult(tid_query);
 
@@ -755,7 +759,7 @@ public class Instagram{
 			System.out.println(e.getMessage());
 		}
 
-		tid = Integer.parseInt(cid_list.get(0).get(0)) + 1;
+		tid = Integer.parseInt(tid_list.get(0).get(0)) + 1;
 
 		try {
 			String query = "INSERT INTO Tags (tid, pid, tagging) VALUES ('" + tid + "', '" + tag_pid + "', '" + tag + "');";
