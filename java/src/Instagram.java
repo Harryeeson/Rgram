@@ -508,8 +508,8 @@ public class Instagram{
 		String username; 
 		String password; 
 		String following_usr; 
+		//have user input username and check if username is valid
 		do{
-			//have user input username and check if username is valid
 			do {
 					System.out.println("Username: ");
 					try {
@@ -541,7 +541,25 @@ public class Instagram{
 					continue;
 				}
 			} while(true);
-			//have user enter username of user they want to follow and check if it's valid
+			//check if the first username entered exists in the database 
+			try {
+					String query_user = "SELECT *\n FROM Users\n WHERE username = '" + username + "'and pwd = '" + password + "';";
+					if (esql.executeQuery(query_user) == 0) {
+						System.out.println("This user does not exist");
+					}
+					else{
+						break; 
+					}	
+				} 
+			catch(Exception e){
+				System.out.println(e.getMessage());
+				continue; 
+			}
+		} while(true); 	
+
+		
+		//have user enter username of user they want to follow and check if it's valid
+		do{
 			do {
 				System.out.println("Enter the username of the user you would like to follow: "); 
 				try {
@@ -557,33 +575,23 @@ public class Instagram{
 						continue;
 					}
 			} while(true); 
-			//check if the first username entered exists in the database 
-			try {
-					String query_user = "SELECT *\n FROM Users\n WHERE username = '" + username + "'and pwd = '" + password + "';";
-					if (esql.executeQuery(query_user) == 0) {
-						System.out.println("This user does not exist");
-					}	
-				} 
-				catch(Exception e) {
-					System.out.println(e.getMessage());
-					continue; 
-				}
+
 			//check if the username to be followed exists in the database 	
 			try {
-					String query_user = "SELECT *\n FROM Users\n WHERE username = '" + following_usr + "';";
-					if (esql.executeQuery(query_user) == 0) {
-						System.out.println("This user does not exist");
-					}
-					else{
-						break; 
-					}
-					
-				} 
-				catch(Exception e) {
-					System.out.println(e.getMessage());
-					continue; 
+				String query_user = "SELECT *\n FROM Users\n WHERE username = '" + following_usr + "';";
+				if (esql.executeQuery(query_user) == 0) {
+					System.out.println("This user does not exist");
 				}
+				else{
+					break; 
+				}	
+			} 
+			catch(Exception e) {
+				System.out.println(e.getMessage());
+				continue; 
+			}
 		} while(true); 
+
 		//add a new entry into the sql Following table 
 		try{
 			String insert_query = "INSERT INTO Following (username, following_usr) VALUES ('" + username + "', '" + following_usr + "');";
@@ -591,7 +599,6 @@ public class Instagram{
 		} 
 		catch(Exception e) {
 			System.out.println(e.getMessage());
-			continue; 
 		}
 	
 	}
