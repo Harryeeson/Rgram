@@ -520,7 +520,7 @@ public class Instagram{
 
 		//add a new entry into the sql Following table 
 		try{
-			String insert_query = "INSERT INTO Followers (fid, username, following_usr) VALUES ('" + follower_id + "', '" + username + "', '" + following_usr + "');";
+			String insert_query = "INSERT INTO Followers (fid, username, following_usr) VALUES ('" + follower_id + "', '" + following_usr + "', '" + Instagram.username + "');";
 			esql.executeUpdate(insert_query); 
 		} 
 		catch(Exception e) {
