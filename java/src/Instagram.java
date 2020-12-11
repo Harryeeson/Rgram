@@ -534,6 +534,7 @@ public class Instagram{
 	}
 
 	public static void SearchForPhoto(Instagram  esql) {	// 5
+		String author;
 		String tag;
 		String earliest_date = "";
 		String latest_date = "";
@@ -562,24 +563,18 @@ public class Instagram{
 							break;
 						}
 					} catch(Exception e) {
-						System.out.println("Invalid input!");
-						continue;
+						System.out.println(e.getMessage());
 					}
 				} while(true);
 
 				try {
 					String query_user = "SELECT title FROM Photo WHERE username = '" + author + "';";
-					if (esql.executeQuery(query_user) == 0) {
+					if (esql.executeQueryAndPrintResult(query_user) == 0) {
 						System.out.println("This user do not have any photos");
-						continue;
-					}
-					else{
-						break; 
 					}	
 				}
 				catch(Exception e) {
 					System.out.println(e.getMessage());
-					continue; 
 				}
 				break;
 
@@ -587,9 +582,9 @@ public class Instagram{
 				do {
 					try {
 						System.out.println("What is the minimum amount of likes?: ");
-						min = in.readLine();
+						min = Integer.parseInt(in.readLine());
 						System.out.println("What is the maximum amount of likes?: ");
-						max = in.readLine();
+						max = Integer.parseInt(in.readLine());
 						if(min < 0 || min > max) {
 							System.out.println("Minimum value cannot be negative or greater than the maximum value. Please try again.");
 							continue;
@@ -614,9 +609,9 @@ public class Instagram{
 				do {
 					try {
 						System.out.println("What is the minimum amount of dislikes?: ");
-						min = in.readLine();
+						min = Integer.parseInt(in.readLine());
 						System.out.println("What is the maximum amount of dislikes?: ");
-						max = in.readLine();
+						max = Integer.parseInt(in.readLine());
 						if(min < 0 || min > max) {
 							System.out.println("Minimum value cannot be negative or greater than the maximum value. Please try again.");
 							continue;
@@ -656,7 +651,7 @@ public class Instagram{
 				} while(true);
 
 				try {
-					String query = "SELECT P.username, P.title FROM Photo P AND Tags T WHERE T.tagging = '" + tag + "' AND T.pid = P.pid;";
+					String query = "SELECT P.username, P.title FROM Photo P, Tags T WHERE T.tagging = '" + tag + "' AND T.pid = P.pid;";
 					esql.executeQueryAndPrintResult(query);
 				} catch(Exception e) {
 					System.out.println(e.getMessage());
