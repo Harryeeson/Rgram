@@ -47,7 +47,7 @@ public class Instagram{
 	public Instagram(String dbname, String dbport, String user, String passwd) throws SQLException {
 		System.out.print("Connecting to database...");
 		try{
-			/*
+			/*******************
 			//overwrite variables
 			dbname = "postgres";
 			dbport = "5432";
@@ -57,10 +57,12 @@ public class Instagram{
 			// constructs the connection URL
 			String url = "jdbc:postgresql://127.0.0.1:" + dbport + "/" + dbname;
 			System.out.println ("Connection URL: " + url + "\n");
-			*/
+			/********************/
+			
+			/*****************************/
 			String url = "jdbc:postgresql://localhost:" + dbport + "/" + dbname;
 			System.out.println ("Connection URL: " + url + "\n");
-			
+			/***************************/
 			// obtain a physical connection
 	        this._connection = DriverManager.getConnection(url, user, passwd);
 	        System.out.println("Done");
