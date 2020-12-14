@@ -1153,17 +1153,17 @@ public class Instagram{
 
 	}
 
-	public static void ListPopularPhotos(Instagram esql) {
-			System.out.println("\nMost popular photos in descending  order.\n");
-			try {
-				String popular_photos_query = "SELECT title, likes FROM Photo ORDER BY likes DESC LIMIT 5;";
-				if(esql.executeQueryAndPrintResult(popular_photos_query) == 0) {
-					System.out.println("end of popular photo list.\n");
-					return;
-				}
-			} catch(Exception e) {
-				System.out.println(e.getMessage());
+	public static void ListPopularPhotos(Instagram esql) { // 11
+		System.out.println("\nMost popular photos in descending  order.\n");
+		try {
+			String popular_photos_query = "SELECT title, likes FROM Photo ORDER BY likes DESC LIMIT 5;";
+			if(esql.executeQueryAndPrintResult(popular_photos_query) == 0) {
+				System.out.println("end of popular photo list.\n");
+				return;
 			}
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
    
 	}
 
