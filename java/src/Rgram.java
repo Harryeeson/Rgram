@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
  * 
  */
 
-public class Instagram{
+public class Rgram{
 	//define global variables
 	public static String username;
 	public static String password;
@@ -44,7 +44,7 @@ public class Instagram{
 	private Connection _connection = null;
 	static BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 	
-	public Instagram(String dbname, String dbport, String user, String passwd) throws SQLException {
+	public Rgram(String dbname, String dbport, String user, String passwd) throws SQLException {
 		System.out.print("Connecting to database...");
 		try{
 			
@@ -239,12 +239,12 @@ public class Instagram{
 	public static void main (String[] args) {
 		if (args.length != 3) {
 			System.err.println (
-				"Usage: " + "java [-classpath <classpath>] " + Instagram.class.getName () +
+				"Usage: " + "java [-classpath <classpath>] " + Rgram.class.getName () +
 		            " <dbname> <port> <user>");
 			return;
 		}//end if
 		
-		Instagram esql = null;
+		Rgram esql = null;
 		
 		try{
 			System.out.println("(1)");
@@ -263,7 +263,7 @@ public class Instagram{
 			String dbport = args[1];
 			String user = args[2];
 			
-			esql = new Instagram (dbname, dbport, user, "");
+			esql = new Rgram (dbname, dbport, user, "");
 
 			boolean keepon = true;
 			
@@ -283,7 +283,6 @@ public class Instagram{
 				System.out.println("9. Upload photo");
 				System.out.println("10. Download photo");
 				System.out.println("11. List most popular photos");
-				//System.out.println("12. View user photos");
 				System.out.println("15. EXIT");
 				
 				/*
@@ -301,7 +300,6 @@ public class Instagram{
 					case 9:  UploadPhoto(esql); TimeUnit.SECONDS.sleep(2); break;
 					case 10: DownloadPhoto(esql); TimeUnit.SECONDS.sleep(2); break;
 					case 11: ListPopularPhotos(esql); TimeUnit.SECONDS.sleep(2); break;
-					//case 12: ViewUserPhotos(esql); break;
 					case 15: keepon = false; break;
 				}
 			}
@@ -336,10 +334,12 @@ public class Instagram{
 				continue;
 			}//end try
 		}while (true);
+
+		System.out.print("\n");
 		return input;
 	}
 
-	public static Integer FindPID(Instagram esql) {
+	public static Integer FindPID(Rgram esql) {
 		List<List<String>> pid_list = new ArrayList<List<String>>();
 		String author;
 		String photo_title;
@@ -405,7 +405,7 @@ public class Instagram{
 									Login Function
 	============================================================================= */
 
-	public static void CheckLogin(Instagram esql) {
+	public static void CheckLogin(Rgram esql) {
 		String uname;
 		String pwd;
 
@@ -456,8 +456,8 @@ public class Instagram{
 					continue;
 				}
 				else {
-					Instagram.username = uname;
-					Instagram.password = pwd;
+					Rgram.username = uname;
+					Rgram.password = pwd;
 					System.out.println("\nWelcome back " + uname + "!");
 					break;
 				}
@@ -473,18 +473,18 @@ public class Instagram{
 								BEGIN MENU FUNCTIONS
 	   ============================================================================= */
 
-	public static void DisplayFeed(Instagram esql) {	// 1
+	public static void DisplayFeed(Rgram esql) {	// 1
 		try {
-			String query_display = "SELECT * FROM Photo ORDER BY likes DESC;";
+			String query_display = "SELECT P.username, P.title, P.likes, P.dislikes, P.pdate FROM Photo P, Users U, Followers F WHERE F.following_usr = '" + Rgram.username + "' AND F.username = U.username AND U.username = P.username;";
 			if(esql.executeQueryAndPrintResult(query_display) == 0) {
-				System.out.println("Nothing on feed to display");
+				System.out.println("You are not following anyone. No feed to display.");
 			}
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
 	 }
 	 
-	public static void SearchForUser(Instagram esql) {	// 2
+	public static void SearchForUser(Rgram esql) {	// 2
 		String photo_title;
         String tag;
 		String username;
@@ -659,7 +659,7 @@ public class Instagram{
 
 	}
 
-	public static void FollowUser(Instagram esql)  {	// 3
+	public static void FollowUser(Rgram esql)  {	// 3
 		List<List<String>> fid_list = new ArrayList<List<String>>();
 		String following_usr;
 		Integer follower_id;
@@ -717,7 +717,7 @@ public class Instagram{
 
 		//add a new entry into the sql Following table 
 		try{
-			String insert_query = "INSERT INTO Followers (fid, username, following_usr) VALUES ('" + follower_id + "', '" + following_usr + "', '" + Instagram.username + "');";
+			String insert_query = "INSERT INTO Followers (fid, username, following_usr) VALUES ('" + follower_id + "', '" + following_usr + "', '" + Rgram.username + "');";
 			esql.executeUpdate(insert_query); 
 		} 
 		catch(Exception e) {
@@ -726,8 +726,8 @@ public class Instagram{
 
 	}
 
-	public static void ListPopularUsers(Instagram esql) {	// 4
-		System.out.println("\nMost popular Users in descending  order.\n");
+	public static void ListPopularUsers(Rgram esql) {	// 4
+		System.out.println("Most popular Users in descending  order.\n");
 		try {
 				String popular_users_query = "SELECT username, COUNT(fid) FROM Followers GROUP BY username ORDER BY COUNT(fid) DESC LIMIT 5;";
 				esql.executeQueryAndPrintResult(popular_users_query); 
@@ -739,7 +739,7 @@ public class Instagram{
 
 	}
 
-	public static void SearchForPhoto(Instagram  esql) {	// 5
+	public static void SearchForPhoto(Rgram  esql) {	// 5
 		String author;
 		String tag;
 		String earliest_date = "";
@@ -894,7 +894,7 @@ public class Instagram{
 		 
 	}
 
-	public static void ViewStatsOfPhoto(Instagram esql) {	// 6
+	public static void ViewStatsOfPhoto(Rgram esql) {	// 6
 		String choice;
 		Integer photo_id;
 
@@ -931,7 +931,7 @@ public class Instagram{
 
 	}
 
-	public static void CommentPhoto(Instagram esql) {	// 7
+	public static void CommentPhoto(Rgram esql) {	// 7
 		List<List<String>> cid_list = new ArrayList<List<String>>();
 		String comment;
 		Integer photo_id;
@@ -981,7 +981,7 @@ public class Instagram{
 
 	}
 
-	public static void TagPhoto(Instagram esql) {	// 8
+	public static void TagPhoto(Rgram esql) {	// 8
 		List<List<String>> tid_list = new ArrayList<List<String>>();
 		String tag;
 		Integer photo_id;
@@ -1023,14 +1023,14 @@ public class Instagram{
 		tag_id = Integer.parseInt(tid_list.get(0).get(0)) + 1;
 
 		try {
-			String query = "INSERT INTO Tags (tid, pid, tagging) VALUES ('" + tag_id + "', '" + photo_id + "', '" + tag + "');";
+			String query = "INSERT INTO Tags (tid, pid, tagger, tagging) VALUES ('" + tag_id + "', '" + photo_id + "', '" + Rgram.username + "', '" + tag + "');";
 			esql.executeUpdate(query);
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
 	}
 
-	public static void UploadPhoto(Instagram esql) {	// 9
+	public static void UploadPhoto(Rgram esql) {	// 9
 		List<List<String>> photo_id_list = new ArrayList<List<String>>();
 		String photo_title;
 		Integer photo_id;
@@ -1073,7 +1073,7 @@ public class Instagram{
 		photo_id = Integer.parseInt(photo_id_list.get(0).get(0)) + 1;
 
 		try {
-			String insert_query = "INSERT INTO Photo (pid, username, title, likes, dislikes, pdate) VALUES ('" + photo_id + "', '" + Instagram.username + "', '" + photo_title + "', '0', '0', '" + zdt + "');";
+			String insert_query = "INSERT INTO Photo (pid, username, title, likes, dislikes, pdate) VALUES ('" + photo_id + "', '" + Rgram.username + "', '" + photo_title + "', '0', '0', '" + zdt + "');";
 			esql.executeUpdate(insert_query);
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
@@ -1095,7 +1095,8 @@ public class Instagram{
                 System.out.println(line);
             }
 
-            int exitCode = process.waitFor();
+			int exitCode = process.waitFor();
+			System.out.print("\nthe photo was uploaded to your folder\n\n");
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -1103,7 +1104,7 @@ public class Instagram{
         }
 	}
 
-	public static void DownloadPhoto(Instagram esql) {	// 10
+	public static void DownloadPhoto(Rgram esql) {	// 10
 		List<List<String>> photo_list = new ArrayList<List<String>>();
 		String photo_title;
 		Integer photo_id;
@@ -1153,14 +1154,13 @@ public class Instagram{
 
 	}
 
-	public static void ListPopularPhotos(Instagram esql) { // 11
-		System.out.println("\nMost popular photos in descending  order.\n");
+	public static void ListPopularPhotos(Rgram esql) { // 11
+		System.out.println("Most popular photos in descending  order.\n");
 		try {
 			String popular_photos_query = "SELECT title, likes FROM Photo ORDER BY likes DESC LIMIT 5;";
-			if(esql.executeQueryAndPrintResult(popular_photos_query) == 0) {
-				System.out.println("end of popular photo list.\n");
-				return;
-			}
+			esql.executeQueryAndPrintResult(popular_photos_query);
+			System.out.println("end of popular photo list.\n");
+
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 		}

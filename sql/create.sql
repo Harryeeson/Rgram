@@ -1,4 +1,4 @@
-﻿﻿﻿DROP TABLE IF EXISTS Followers;
+﻿﻿DROP TABLE IF EXISTS Followers;
 DROP TABLE IF EXISTS PhotoComments;
 DROP TABLE IF EXISTS Tags;
 DROP TABLE IF EXISTS Photo;
@@ -38,6 +38,7 @@ CREATE TABLE PhotoComments (
 CREATE TABLE Tags (
     tid BIGINT NOT NULL,
     pid BIGINT NOT NULL,
+    tagger VARCHAR(64) NOT NULL,
     tagging VARCHAR(128) NOT NULL,
     PRIMARY KEY(tid),
     FOREIGN KEY(pid) REFERENCES Photo(pid)
@@ -86,6 +87,7 @@ WITH DELIMITER ',';
 COPY Tags (
     tid,
     pid,
+    tagger,
     tagging
 )
 FROM 'Tags.csv'
