@@ -724,7 +724,7 @@ public class Instagram{
 	public static void ListPopularUsers(Instagram esql) {	// 4
 		System.out.println("\nMost popular Users in descending  order.\n");
 		try {
-				String popular_users_query = "SELECT username, COUNT(fid) FROM Followers GROUP BY username ORDER BY COUNT(fid) DESC;";
+				String popular_users_query = "SELECT username, COUNT(fid) FROM Followers GROUP BY username ORDER BY COUNT(fid) DESC LIMIT 5;";
 				esql.executeQueryAndPrintResult(popular_users_query); 
 				System.out.println("end of popular users list.\n");
 	
@@ -1151,7 +1151,7 @@ public class Instagram{
 	public static void ListPopularPhotos(Instagram esql) {
 			System.out.println("\nMost popular photos in descending  order.\n");
 			try {
-				String popular_photos_query = "SELECT title, likes FROM Photo ORDER BY likes DESC;";
+				String popular_photos_query = "SELECT title, likes FROM Photo ORDER BY likes DESC LIMIT 5;";
 				if(esql.executeQueryAndPrintResult(popular_photos_query) == 0) {
 					System.out.println("end of popular photo list.\n");
 					return;
