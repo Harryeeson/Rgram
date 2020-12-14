@@ -47,22 +47,26 @@ public class Instagram{
 	public Instagram(String dbname, String dbport, String user, String passwd) throws SQLException {
 		System.out.print("Connecting to database...");
 		try{
-			/********************
+			
+			/*******************************
 			//overwrite variables
 			dbname = "postgres";
 			dbport = "5432";
 			user = "postgres";
-			passwd = "";  //dont forget to enter this
+			passwd = "";
 			//overwrite variables end
-			// constructs the connection URL
 			String url = "jdbc:postgresql://127.0.0.1:" + dbport + "/" + dbname;
 			System.out.println ("Connection URL: " + url + "\n");
-			/********************/
+			/*******************************/
 			
-			/*****************************/
+			
+			// constructs the connection URL
+			
+			/*******************************/
 			String url = "jdbc:postgresql://localhost:" + dbport + "/" + dbname;
 			System.out.println ("Connection URL: " + url + "\n");
-			/***************************/
+			/*******************************/
+			
 			// obtain a physical connection
 	        this._connection = DriverManager.getConnection(url, user, passwd);
 	        System.out.println("Done");
@@ -483,12 +487,11 @@ public class Instagram{
 	public static void SearchForUser(Instagram esql) {	// 2
 		String photo_title;
         String tag;
-        String rating;
-        String username;
-        Integer min;
-		Integer max;
+		String username;
 		String first_name;
 		String last_name;
+        Integer min;
+		Integer max;
         //Search for Users based on photo titles, tags, ratings, and first and last name
 		System.out.println("What would you like to search by?: ");
 		System.out.println("1. photo title");
@@ -503,8 +506,8 @@ public class Instagram{
 					System.out.println("Enter the photo title: ");
 					try {
 						photo_title = in.readLine();
-						if(photo_title.length() > 64 || photo_title.length() == 0)  {
-							System.out.println("Author username cannot be empty and has to be less 64 characters or less.");
+						if(photo_title.length() > 128 || photo_title.length() == 0)  {
+							System.out.println("Photo title cannot be empty and has to be less 128 characters or less.");
 							continue;
 						}
 						else {
@@ -593,7 +596,7 @@ public class Instagram{
 							break;
 						}
 					} catch(Exception e) {
-						System.out.println("Invalid input!");
+						System.out.println(e.getMessage());
 						continue;
 					}
 				} while(true);
@@ -612,44 +615,46 @@ public class Instagram{
                 do {
                     System.out.println("Enter the first name of the user you would like to search: "); 
                     try {
-                            first_name = in.readLine();
-                            if(first_name.length() > 64 || first_name.length() == 0)  {
-                                System.out.println("first name cannot be empty and has to be less 64 characters or less.");
-                                continue;
-							}
-
-                        } catch(Exception e) {
-                            System.out.println(e.getMessage());
+                        first_name = in.readLine();
+                        if(first_name.length() > 64 || first_name.length() == 0)  {
+                            System.out.println("First name cannot be empty and has to be less 32 characters or less.");
                             continue;
 						}
-						System.out.println("Enter the last name of the user you would like to search: "); 
-						try {
-								last_name = in.readLine();
-								if(last_name.length() > 64 || last_name.length() == 0)  {
-									System.out.println("last name cannot be empty and has to be less 64 characters or less.");
-									continue;
-								}
-	
-							} catch(Exception e) {
-								System.out.println(e.getMessage());
-								continue;
-							}
-				
-                
-					//check if the username to be followed exists in the database 
-
-						try {
-							String query_firstandlastname = "SELECT username FROM Users WHERE fname = '" + first_name +"' AND lname = '" + last_name + "';";
-							if (esql.executeQueryAndPrintResult(query_firstandlastname) == 0) {
-								System.out.println("This user does not exist");
-								break;
-							}
-						} 
-						catch(Exception e) {
-							System.out.println(e.getMessage());
+						else {
+							break;
 						}
-						break; 
-				}while(true);
+
+                    } catch(Exception e) {
+                        System.out.println(e.getMessage());
+					}
+				} while(true);
+
+				do {
+					System.out.println("Enter the last name of the user you would like to search: "); 
+					try {
+						last_name = in.readLine();
+						if(last_name.length() > 64 || last_name.length() == 0)  {
+							System.out.println("Last name cannot be empty and has to be less 32 characters or less.");
+							continue;
+						}
+						else {
+							break;
+						}
+					} catch(Exception e) {
+						System.out.println(e.getMessage());
+					}
+				} while(true);
+					//check if the username to be followed exists in the database
+				try {
+					String query_firstandlastname = "SELECT username FROM Users WHERE fname = '" + first_name +"' AND lname = '" + last_name + "';";
+					if (esql.executeQueryAndPrintResult(query_firstandlastname) == 0) {
+						System.out.println("This user does not exist");
+					}
+				} 
+				catch(Exception e) {
+					System.out.println(e.getMessage());
+				}
+				break; 
 		}
 
 	}
