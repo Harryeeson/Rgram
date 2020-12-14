@@ -520,8 +520,9 @@ public class Rgram{
 
 				try {
 					String query_photo_title = "SELECT username FROM Photo WHERE title = '" + photo_title + "';";
+					System.out.print("\n");
 					if (esql.executeQueryAndPrintResult(query_photo_title) == 0) {
-						System.out.println("This photo title belongs to no user.");
+						System.out.println("There is not photo with this title.");
 					}	
 				}
 				catch(Exception e) {
@@ -550,6 +551,7 @@ public class Rgram{
 
 				try {
 					String query = "SELECT username FROM Photo WHERE likes >= '" + min + "' AND likes <= '" + max + "';";
+					System.out.print("\n");
 					esql.executeQueryAndPrintResult(query);
 				} catch(Exception e) {
 					System.out.println(e.getMessage());
@@ -577,6 +579,7 @@ public class Rgram{
 
 				try {
 					String query = "SELECT username FROM Photo WHERE dislikes >= '" + min + "' AND dislikes <= '" + max + "';";
+					System.out.print("\n");
 					esql.executeQueryAndPrintResult(query);
 				} catch(Exception e) {
 					System.out.println(e.getMessage());
@@ -603,6 +606,7 @@ public class Rgram{
 
 				try {
 					String query = "SELECT P.username FROM Photo P, Tags T WHERE T.tagging = '" + tag + "' AND T.pid = P.pid;";
+					System.out.print("\n");
 					if(esql.executeQueryAndPrintResult(query) == 0){
 						System.out.println("There is no tag by that name.");
 					}
@@ -647,6 +651,7 @@ public class Rgram{
 					//check if the username to be followed exists in the database
 				try {
 					String query_firstandlastname = "SELECT username FROM Users WHERE fname = '" + first_name +"' AND lname = '" + last_name + "';";
+					System.out.print("\n");
 					if (esql.executeQueryAndPrintResult(query_firstandlastname) == 0) {
 						System.out.println("This user does not exist");
 					}
@@ -731,7 +736,7 @@ public class Rgram{
 		try {
 				String popular_users_query = "SELECT username, COUNT(fid) FROM Followers GROUP BY username ORDER BY COUNT(fid) DESC LIMIT 5;";
 				esql.executeQueryAndPrintResult(popular_users_query); 
-				System.out.println("end of popular users list.\n");
+				System.out.println("end of popular users list.");
 	
 			} catch(Exception e) {
 			System.out.println(e.getMessage());
@@ -775,6 +780,7 @@ public class Rgram{
 
 				try {
 					String query_user = "SELECT title FROM Photo WHERE username = '" + author + "';";
+					System.out.print("\n");
 					if (esql.executeQueryAndPrintResult(query_user) == 0) {
 						System.out.println("This user do not have any photos");
 					}	
@@ -805,6 +811,7 @@ public class Rgram{
 
 				try {
 					String query = "SELECT username, title FROM Photo WHERE likes >= '" + min + "' AND likes <= '" + max + "';";
+					System.out.print("\n");
 					esql.executeQueryAndPrintResult(query);
 				} catch(Exception e) {
 					System.out.println(e.getMessage());
@@ -832,6 +839,7 @@ public class Rgram{
 
 				try {
 					String query = "SELECT username, title FROM Photo WHERE dislikes >= '" + min + "' AND dislikes <= '" + max + "';";
+					System.out.print("\n");
 					esql.executeQueryAndPrintResult(query);
 				} catch(Exception e) {
 					System.out.println(e.getMessage());
@@ -858,6 +866,7 @@ public class Rgram{
 
 				try {
 					String query = "SELECT P.username, P.title FROM Photo P, Tags T WHERE T.tagging = '" + tag + "' AND T.pid = P.pid;";
+					System.out.print("\n");
 					esql.executeQueryAndPrintResult(query);
 				} catch(Exception e) {
 					System.out.println(e.getMessage());
@@ -885,6 +894,7 @@ public class Rgram{
 
 				try {
 					String query = "SELECT username, title, pdate FROM Photo WHERE pdate >= '" + earliest_date + "' AND pdate <= '" + latest_date + "';";
+					System.out.print("\n");
 					esql.executeQueryAndPrintResult(query);
 				} catch(Exception e) {
 					System.out.println(e.getMessage());
@@ -902,6 +912,7 @@ public class Rgram{
 
 		try {
 			String photo_query = "SELECT P.username, P.title, P.likes, P.dislikes, COUNT(C.comments) AS NumberOfComments, P.pdate FROM Photo P LEFT JOIN PhotoComments C ON P.pid = C.pid WHERE P.pid = '" + photo_id + "' GROUP BY P.username, P.title, P.likes, P.dislikes, P.pdate;";
+			System.out.print("\n");
 			esql.executeQueryAndPrintResult(photo_query);
 
 		} catch(Exception e) {
@@ -909,11 +920,12 @@ public class Rgram{
 		}
 
 		do {
-			System.out.println("Would you like to view comments for this photo? (Y/N)");
+			System.out.println("\nWould you like to view comments for this photo? (Y/N)");
 			try {
 				choice = in.readLine();
 				if(choice.equals("Y")) {
 					String comment_query = "SELECT commentor, comments FROM PhotoComments WHERE pid = '" + photo_id + "';";
+					System.out.print("\n");
 					esql.executeQueryAndPrintResult(comment_query);
 					break;
 				}
@@ -1159,7 +1171,7 @@ public class Rgram{
 		try {
 			String popular_photos_query = "SELECT title, likes FROM Photo ORDER BY likes DESC LIMIT 5;";
 			esql.executeQueryAndPrintResult(popular_photos_query);
-			System.out.println("end of popular photo list.\n");
+			System.out.println("end of popular photo list.");
 
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
