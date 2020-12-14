@@ -1,4 +1,7 @@
-﻿DROP TABLE IF EXISTS Photo;
+﻿﻿﻿DROP TABLE IF EXISTS Followers;
+DROP TABLE IF EXISTS PhotoComments;
+DROP TABLE IF EXISTS Tags;
+DROP TABLE IF EXISTS Photo;
 DROP TABLE IF EXISTS Users;
 DROP TABLE IF EXISTS Following; 
 
@@ -10,7 +13,7 @@ CREATE TABLE Users (
     username VARCHAR(64) NOT NULL,
     fname VARCHAR(32) NOT NULL,
     lname VARCHAR(32) NOT NULL,
-    pwd CHAR(64) NOT NULL,
+    pwd VARCHAR(64) NOT NULL,
     PRIMARY KEY(username)
 );
 
@@ -21,24 +24,36 @@ CREATE TABLE Photo (
     likes BIGINT NOT NULL,
     dislikes BIGINT NOT NULL, 
     pdate DATE NOT NULL,
-    PRIMARY KEY (pid),
-    FOREIGN KEY (username) REFERENCES Users(username)
+    PRIMARY KEY(pid),
+    FOREIGN KEY(username) REFERENCES Users(username)
 );
 
-CREATE TABLE Following (
+CREATE TABLE PhotoComments (
+    cid BIGINT NOT NULL,
+    pid BIGINT NOT NULL,
+    commentor VARCHAR(64) NOT NULL,
+    comments VARCHAR(128) NOT NULL,
+    PRIMARY KEY(cid),
+    FOREIGN KEY(pid) REFERENCES Photo(pid)
+);
+
+CREATE TABLE Tags (
+    tid BIGINT NOT NULL,
+    pid BIGINT NOT NULL,
+    tagging VARCHAR(128) NOT NULL,
+    PRIMARY KEY(tid),
+    FOREIGN KEY(pid) REFERENCES Photo(pid)
+);
+
+CREATE TABLE Followers (
+    fid BIGINT NOT NULL,
     username VARCHAR(64) NOT NULL,
     following_usr VARCHAR(64) NOT NULL,
-    PRIMARY KEY(following_usr),
+    PRIMARY KEY(fid),
     FOREIGN KEY(username) REFERENCES Users(username)
-
 ); 
 
-
 -- Relations
-
-----------------------------
--- INSERT DATA STATEMENTS --
-----------------------------
 
 COPY Users (
     userID,
@@ -61,9 +76,27 @@ COPY Photo (
 FROM 'Photo.csv'
 WITH DELIMITER ',';
 
-COPY Following (
+COPY PhotoComments (
+    cid,
+    pid,
+    commentor,
+    comments
+)
+FROM 'PhotoComments.csv'
+WITH DELIMITER ',';
+
+COPY Tags (
+    tid,
+    pid,
+    tagging
+)
+FROM 'Tags.csv'
+WITH DELIMITER ',';
+
+COPY Followers (
+    fid,
     username,
     following_usr
 )
-FROM 'Following.csv'
+FROM 'Followers.csv'
 WITH DELIMITER ',';
