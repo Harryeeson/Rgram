@@ -475,7 +475,7 @@ public class Rgram{
 
 	public static void DisplayFeed(Rgram esql) {	// 1
 		try {
-			String query_display = "SELECT P.username, P.title, P.likes, P.dislikes, P.pdate FROM Photo P, Users U, Followers F WHERE F.following_usr = '" + Rgram.username + "' AND F.username = U.username AND U.username = P.username;";
+			String query_display = "SELECT P.username, P.title, P.likes, P.dislikes, P.pdate FROM Photo P, Users U, Followers F WHERE F.following_usr = '" + Rgram.username + "' AND F.username = U.username AND U.username = P.username ORDER BY P.likes DESC;";
 			if(esql.executeQueryAndPrintResult(query_display) == 0) {
 				System.out.println("You are not following anyone. No feed to display.");
 			}
