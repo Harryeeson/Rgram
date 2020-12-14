@@ -5,4 +5,4 @@ root=$(dirname $root)
 cd $root/java
 
 rm -rf bin/*.class
-javac -cp ".;lib/postgresql-42.1.4.jar;" src/Instagram.java -d bin/
+javac -cp ".;lib/postgresql-42.1.4.jar;" src/Rgram.java -d bin/

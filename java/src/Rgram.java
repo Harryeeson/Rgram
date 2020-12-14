@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
  * 
  */
 
-public class Instagram{
+public class Rgram{
 	//define global variables
 	public static String username;
 	public static String password;
@@ -44,25 +44,29 @@ public class Instagram{
 	private Connection _connection = null;
 	static BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 	
-	public Instagram(String dbname, String dbport, String user, String passwd) throws SQLException {
+	public Rgram(String dbname, String dbport, String user, String passwd) throws SQLException {
 		System.out.print("Connecting to database...");
 		try{
-			/*******************
+			
+			/*******************************
 			//overwrite variables
 			dbname = "postgres";
 			dbport = "5432";
 			user = "postgres";
-			passwd = "";  //dont forget to enter this
+			passwd = "";
 			//overwrite variables end
-			// constructs the connection URL
 			String url = "jdbc:postgresql://127.0.0.1:" + dbport + "/" + dbname;
 			System.out.println ("Connection URL: " + url + "\n");
-			/********************/
+			/*******************************/
 			
-			/*****************************/
+			
+			// constructs the connection URL
+			
+			/*******************************/
 			String url = "jdbc:postgresql://localhost:" + dbport + "/" + dbname;
 			System.out.println ("Connection URL: " + url + "\n");
-			/***************************/
+			/*******************************/
+			
 			// obtain a physical connection
 	        this._connection = DriverManager.getConnection(url, user, passwd);
 	        System.out.println("Done");
@@ -235,12 +239,12 @@ public class Instagram{
 	public static void main (String[] args) {
 		if (args.length != 3) {
 			System.err.println (
-				"Usage: " + "java [-classpath <classpath>] " + Instagram.class.getName () +
+				"Usage: " + "java [-classpath <classpath>] " + Rgram.class.getName () +
 		            " <dbname> <port> <user>");
 			return;
 		}//end if
 		
-		Instagram esql = null;
+		Rgram esql = null;
 		
 		try{
 			System.out.println("(1)");
@@ -259,7 +263,7 @@ public class Instagram{
 			String dbport = args[1];
 			String user = args[2];
 			
-			esql = new Instagram (dbname, dbport, user, "");
+			esql = new Rgram (dbname, dbport, user, "");
 
 			boolean keepon = true;
 			
@@ -279,7 +283,6 @@ public class Instagram{
 				System.out.println("9. Upload photo");
 				System.out.println("10. Download photo");
 				System.out.println("11. List most popular photos");
-				//System.out.println("12. View user photos");
 				System.out.println("15. EXIT");
 				
 				/*
@@ -297,7 +300,6 @@ public class Instagram{
 					case 9:  UploadPhoto(esql); TimeUnit.SECONDS.sleep(2); break;
 					case 10: DownloadPhoto(esql); TimeUnit.SECONDS.sleep(2); break;
 					case 11: ListPopularPhotos(esql); TimeUnit.SECONDS.sleep(2); break;
-					//case 12: ViewUserPhotos(esql); break;
 					case 15: keepon = false; break;
 				}
 			}
@@ -332,10 +334,12 @@ public class Instagram{
 				continue;
 			}//end try
 		}while (true);
+
+		System.out.print("\n");
 		return input;
 	}
 
-	public static Integer FindPID(Instagram esql) {
+	public static Integer FindPID(Rgram esql) {
 		List<List<String>> pid_list = new ArrayList<List<String>>();
 		String author;
 		String photo_title;
@@ -401,7 +405,7 @@ public class Instagram{
 									Login Function
 	============================================================================= */
 
-	public static void CheckLogin(Instagram esql) {
+	public static void CheckLogin(Rgram esql) {
 		String uname;
 		String pwd;
 
@@ -452,8 +456,8 @@ public class Instagram{
 					continue;
 				}
 				else {
-					Instagram.username = uname;
-					Instagram.password = pwd;
+					Rgram.username = uname;
+					Rgram.password = pwd;
 					System.out.println("\nWelcome back " + uname + "!");
 					break;
 				}
@@ -469,26 +473,25 @@ public class Instagram{
 								BEGIN MENU FUNCTIONS
 	   ============================================================================= */
 
-	public static void DisplayFeed(Instagram esql) {	// 1
+	public static void DisplayFeed(Rgram esql) {	// 1
 		try {
-			String query_display = "SELECT * FROM Photo ORDER BY likes DESC;";
+			String query_display = "SELECT P.username, P.title, P.likes, P.dislikes, P.pdate FROM Photo P, Users U, Followers F WHERE F.following_usr = '" + Rgram.username + "' AND F.username = U.username AND U.username = P.username ORDER BY P.likes DESC;";
 			if(esql.executeQueryAndPrintResult(query_display) == 0) {
-				System.out.println("Nothing on feed to display");
+				System.out.println("You are not following anyone. No feed to display.");
 			}
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
 	 }
 	 
-	public static void SearchForUser(Instagram esql) {	// 2
+	public static void SearchForUser(Rgram esql) {	// 2
 		String photo_title;
         String tag;
-        String rating;
-        String username;
-        Integer min;
-		Integer max;
+		String username;
 		String first_name;
 		String last_name;
+        Integer min;
+		Integer max;
         //Search for Users based on photo titles, tags, ratings, and first and last name
 		System.out.println("What would you like to search by?: ");
 		System.out.println("1. photo title");
@@ -503,8 +506,8 @@ public class Instagram{
 					System.out.println("Enter the photo title: ");
 					try {
 						photo_title = in.readLine();
-						if(photo_title.length() > 64 || photo_title.length() == 0)  {
-							System.out.println("Author username cannot be empty and has to be less 64 characters or less.");
+						if(photo_title.length() > 128 || photo_title.length() == 0)  {
+							System.out.println("Photo title cannot be empty and has to be less 128 characters or less.");
 							continue;
 						}
 						else {
@@ -517,8 +520,9 @@ public class Instagram{
 
 				try {
 					String query_photo_title = "SELECT username FROM Photo WHERE title = '" + photo_title + "';";
+					System.out.print("\n");
 					if (esql.executeQueryAndPrintResult(query_photo_title) == 0) {
-						System.out.println("This photo title belongs to no user.");
+						System.out.println("There is not photo with this title.");
 					}	
 				}
 				catch(Exception e) {
@@ -547,6 +551,7 @@ public class Instagram{
 
 				try {
 					String query = "SELECT username FROM Photo WHERE likes >= '" + min + "' AND likes <= '" + max + "';";
+					System.out.print("\n");
 					esql.executeQueryAndPrintResult(query);
 				} catch(Exception e) {
 					System.out.println(e.getMessage());
@@ -574,6 +579,7 @@ public class Instagram{
 
 				try {
 					String query = "SELECT username FROM Photo WHERE dislikes >= '" + min + "' AND dislikes <= '" + max + "';";
+					System.out.print("\n");
 					esql.executeQueryAndPrintResult(query);
 				} catch(Exception e) {
 					System.out.println(e.getMessage());
@@ -593,13 +599,14 @@ public class Instagram{
 							break;
 						}
 					} catch(Exception e) {
-						System.out.println("Invalid input!");
+						System.out.println(e.getMessage());
 						continue;
 					}
 				} while(true);
 
 				try {
 					String query = "SELECT P.username FROM Photo P, Tags T WHERE T.tagging = '" + tag + "' AND T.pid = P.pid;";
+					System.out.print("\n");
 					if(esql.executeQueryAndPrintResult(query) == 0){
 						System.out.println("There is no tag by that name.");
 					}
@@ -612,49 +619,52 @@ public class Instagram{
                 do {
                     System.out.println("Enter the first name of the user you would like to search: "); 
                     try {
-                            first_name = in.readLine();
-                            if(first_name.length() > 64 || first_name.length() == 0)  {
-                                System.out.println("first name cannot be empty and has to be less 64 characters or less.");
-                                continue;
-							}
-
-                        } catch(Exception e) {
-                            System.out.println(e.getMessage());
+                        first_name = in.readLine();
+                        if(first_name.length() > 64 || first_name.length() == 0)  {
+                            System.out.println("First name cannot be empty and has to be less 32 characters or less.");
                             continue;
 						}
-						System.out.println("Enter the last name of the user you would like to search: "); 
-						try {
-								last_name = in.readLine();
-								if(last_name.length() > 64 || last_name.length() == 0)  {
-									System.out.println("last name cannot be empty and has to be less 64 characters or less.");
-									continue;
-								}
-	
-							} catch(Exception e) {
-								System.out.println(e.getMessage());
-								continue;
-							}
-				
-                
-					//check if the username to be followed exists in the database 
-
-						try {
-							String query_firstandlastname = "SELECT username FROM Users WHERE fname = '" + first_name +"' AND lname = '" + last_name + "';";
-							if (esql.executeQueryAndPrintResult(query_firstandlastname) == 0) {
-								System.out.println("This user does not exist");
-								break;
-							}
-						} 
-						catch(Exception e) {
-							System.out.println(e.getMessage());
+						else {
+							break;
 						}
-						break; 
-				}while(true);
+
+                    } catch(Exception e) {
+                        System.out.println(e.getMessage());
+					}
+				} while(true);
+
+				do {
+					System.out.println("Enter the last name of the user you would like to search: "); 
+					try {
+						last_name = in.readLine();
+						if(last_name.length() > 64 || last_name.length() == 0)  {
+							System.out.println("Last name cannot be empty and has to be less 32 characters or less.");
+							continue;
+						}
+						else {
+							break;
+						}
+					} catch(Exception e) {
+						System.out.println(e.getMessage());
+					}
+				} while(true);
+					//check if the username to be followed exists in the database
+				try {
+					String query_firstandlastname = "SELECT username FROM Users WHERE fname = '" + first_name +"' AND lname = '" + last_name + "';";
+					System.out.print("\n");
+					if (esql.executeQueryAndPrintResult(query_firstandlastname) == 0) {
+						System.out.println("This user does not exist");
+					}
+				} 
+				catch(Exception e) {
+					System.out.println(e.getMessage());
+				}
+				break; 
 		}
 
 	}
 
-	public static void FollowUser(Instagram esql)  {	// 3
+	public static void FollowUser(Rgram esql)  {	// 3
 		List<List<String>> fid_list = new ArrayList<List<String>>();
 		String following_usr;
 		Integer follower_id;
@@ -712,7 +722,7 @@ public class Instagram{
 
 		//add a new entry into the sql Following table 
 		try{
-			String insert_query = "INSERT INTO Followers (fid, username, following_usr) VALUES ('" + follower_id + "', '" + following_usr + "', '" + Instagram.username + "');";
+			String insert_query = "INSERT INTO Followers (fid, username, following_usr) VALUES ('" + follower_id + "', '" + following_usr + "', '" + Rgram.username + "');";
 			esql.executeUpdate(insert_query); 
 		} 
 		catch(Exception e) {
@@ -721,12 +731,12 @@ public class Instagram{
 
 	}
 
-	public static void ListPopularUsers(Instagram esql) {	// 4
-		System.out.println("\nMost popular Users in descending  order.\n");
+	public static void ListPopularUsers(Rgram esql) {	// 4
+		System.out.println("Most popular Users in descending  order.\n");
 		try {
-				String popular_users_query = "SELECT username, COUNT(fid) FROM Followers GROUP BY username ORDER BY COUNT(fid) DESC;";
+				String popular_users_query = "SELECT username, COUNT(fid) FROM Followers GROUP BY username ORDER BY COUNT(fid) DESC LIMIT 5;";
 				esql.executeQueryAndPrintResult(popular_users_query); 
-				System.out.println("end of popular users list.\n");
+				System.out.println("end of popular users list.");
 	
 			} catch(Exception e) {
 			System.out.println(e.getMessage());
@@ -734,7 +744,7 @@ public class Instagram{
 
 	}
 
-	public static void SearchForPhoto(Instagram  esql) {	// 5
+	public static void SearchForPhoto(Rgram  esql) {	// 5
 		String author;
 		String tag;
 		String earliest_date = "";
@@ -770,6 +780,7 @@ public class Instagram{
 
 				try {
 					String query_user = "SELECT title FROM Photo WHERE username = '" + author + "';";
+					System.out.print("\n");
 					if (esql.executeQueryAndPrintResult(query_user) == 0) {
 						System.out.println("This user do not have any photos");
 					}	
@@ -800,6 +811,7 @@ public class Instagram{
 
 				try {
 					String query = "SELECT username, title FROM Photo WHERE likes >= '" + min + "' AND likes <= '" + max + "';";
+					System.out.print("\n");
 					esql.executeQueryAndPrintResult(query);
 				} catch(Exception e) {
 					System.out.println(e.getMessage());
@@ -827,6 +839,7 @@ public class Instagram{
 
 				try {
 					String query = "SELECT username, title FROM Photo WHERE dislikes >= '" + min + "' AND dislikes <= '" + max + "';";
+					System.out.print("\n");
 					esql.executeQueryAndPrintResult(query);
 				} catch(Exception e) {
 					System.out.println(e.getMessage());
@@ -853,6 +866,7 @@ public class Instagram{
 
 				try {
 					String query = "SELECT P.username, P.title FROM Photo P, Tags T WHERE T.tagging = '" + tag + "' AND T.pid = P.pid;";
+					System.out.print("\n");
 					esql.executeQueryAndPrintResult(query);
 				} catch(Exception e) {
 					System.out.println(e.getMessage());
@@ -880,6 +894,7 @@ public class Instagram{
 
 				try {
 					String query = "SELECT username, title, pdate FROM Photo WHERE pdate >= '" + earliest_date + "' AND pdate <= '" + latest_date + "';";
+					System.out.print("\n");
 					esql.executeQueryAndPrintResult(query);
 				} catch(Exception e) {
 					System.out.println(e.getMessage());
@@ -889,7 +904,7 @@ public class Instagram{
 		 
 	}
 
-	public static void ViewStatsOfPhoto(Instagram esql) {	// 6
+	public static void ViewStatsOfPhoto(Rgram esql) {	// 6
 		String choice;
 		Integer photo_id;
 
@@ -897,6 +912,7 @@ public class Instagram{
 
 		try {
 			String photo_query = "SELECT P.username, P.title, P.likes, P.dislikes, COUNT(C.comments) AS NumberOfComments, P.pdate FROM Photo P LEFT JOIN PhotoComments C ON P.pid = C.pid WHERE P.pid = '" + photo_id + "' GROUP BY P.username, P.title, P.likes, P.dislikes, P.pdate;";
+			System.out.print("\n");
 			esql.executeQueryAndPrintResult(photo_query);
 
 		} catch(Exception e) {
@@ -904,11 +920,12 @@ public class Instagram{
 		}
 
 		do {
-			System.out.println("Would you like to view comments for this photo? (Y/N)");
+			System.out.println("\nWould you like to view comments for this photo? (Y/N)");
 			try {
 				choice = in.readLine();
 				if(choice.equals("Y")) {
 					String comment_query = "SELECT commentor, comments FROM PhotoComments WHERE pid = '" + photo_id + "';";
+					System.out.print("\n");
 					esql.executeQueryAndPrintResult(comment_query);
 					break;
 				}
@@ -926,7 +943,7 @@ public class Instagram{
 
 	}
 
-	public static void CommentPhoto(Instagram esql) {	// 7
+	public static void CommentPhoto(Rgram esql) {	// 7
 		List<List<String>> cid_list = new ArrayList<List<String>>();
 		String comment;
 		Integer photo_id;
@@ -976,7 +993,7 @@ public class Instagram{
 
 	}
 
-	public static void TagPhoto(Instagram esql) {	// 8
+	public static void TagPhoto(Rgram esql) {	// 8
 		List<List<String>> tid_list = new ArrayList<List<String>>();
 		String tag;
 		Integer photo_id;
@@ -1018,14 +1035,14 @@ public class Instagram{
 		tag_id = Integer.parseInt(tid_list.get(0).get(0)) + 1;
 
 		try {
-			String query = "INSERT INTO Tags (tid, pid, tagging) VALUES ('" + tag_id + "', '" + photo_id + "', '" + tag + "');";
+			String query = "INSERT INTO Tags (tid, pid, tagger, tagging) VALUES ('" + tag_id + "', '" + photo_id + "', '" + Rgram.username + "', '" + tag + "');";
 			esql.executeUpdate(query);
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
 	}
 
-	public static void UploadPhoto(Instagram esql) {	// 9
+	public static void UploadPhoto(Rgram esql) {	// 9
 		List<List<String>> photo_id_list = new ArrayList<List<String>>();
 		String photo_title;
 		Integer photo_id;
@@ -1068,7 +1085,7 @@ public class Instagram{
 		photo_id = Integer.parseInt(photo_id_list.get(0).get(0)) + 1;
 
 		try {
-			String insert_query = "INSERT INTO Photo (pid, username, title, likes, dislikes, pdate) VALUES ('" + photo_id + "', '" + Instagram.username + "', '" + photo_title + "', '0', '0', '" + zdt + "');";
+			String insert_query = "INSERT INTO Photo (pid, username, title, likes, dislikes, pdate) VALUES ('" + photo_id + "', '" + Rgram.username + "', '" + photo_title + "', '0', '0', '" + zdt + "');";
 			esql.executeUpdate(insert_query);
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
@@ -1090,7 +1107,8 @@ public class Instagram{
                 System.out.println(line);
             }
 
-            int exitCode = process.waitFor();
+			int exitCode = process.waitFor();
+			System.out.print("\nthe photo was uploaded to your folder\n\n");
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -1098,7 +1116,7 @@ public class Instagram{
         }
 	}
 
-	public static void DownloadPhoto(Instagram esql) {	// 10
+	public static void DownloadPhoto(Rgram esql) {	// 10
 		List<List<String>> photo_list = new ArrayList<List<String>>();
 		String photo_title;
 		Integer photo_id;
@@ -1148,17 +1166,16 @@ public class Instagram{
 
 	}
 
-	public static void ListPopularPhotos(Instagram esql) {
-			System.out.println("\nMost popular photos in descending  order.\n");
-			try {
-				String popular_photos_query = "SELECT title, likes FROM Photo ORDER BY likes DESC;";
-				if(esql.executeQueryAndPrintResult(popular_photos_query) == 0) {
-					System.out.println("end of popular photo list.\n");
-					return;
-				}
-			} catch(Exception e) {
-				System.out.println(e.getMessage());
-			}
+	public static void ListPopularPhotos(Rgram esql) { // 11
+		System.out.println("Most popular photos in descending  order.\n");
+		try {
+			String popular_photos_query = "SELECT title, likes FROM Photo ORDER BY likes DESC LIMIT 5;";
+			esql.executeQueryAndPrintResult(popular_photos_query);
+			System.out.println("end of popular photo list.");
+
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
    
 	}
 
