@@ -47,7 +47,7 @@ public class Instagram{
 	public Instagram(String dbname, String dbport, String user, String passwd) throws SQLException {
 		System.out.print("Connecting to database...");
 		try{
-			/*******************
+			/********************
 			//overwrite variables
 			dbname = "postgres";
 			dbport = "5432";
