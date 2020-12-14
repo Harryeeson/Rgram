@@ -401,6 +401,7 @@ public class Rgram{
 		return pid;
 	}
 
+
 	/* =============================================================================
 									Login Function
 	============================================================================= */
@@ -694,13 +695,28 @@ public class Rgram{
 					System.out.println("This user does not exist");
 					continue;
 				}
-				else{
-					break; 
-				}	
+				// else{
+				// 	break; 
+				// }	
 			} 
 			catch(Exception e) {
 				System.out.println(e.getMessage());
 				continue; 
+			}
+			//check if user is already following user
+			try {
+				String query_following = "SELECT * FROM Followers WHERE username = '" + esql.username + "'AND folowing_usr = '" + following_usr + "';"; 
+				if (esql.executeQuery(query_following) != 0){
+					System.out.println("You are already following '" + following_usr + "'."); 
+					continue;
+				}
+				else{
+					break;
+				}
+			}
+			catch(Exception e){
+				System.out.println(e.getMessage()); 
+				continue;
 			}
 		} while(true); 
 
