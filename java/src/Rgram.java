@@ -705,7 +705,7 @@ public class Rgram{
 			}
 			//check if user is trying to follow him/herself
 			try{
-				if(esql.username == following_usr){
+				if(following_usr.equals(esql.username)){
 					System.out.println("You cannot follow yourself");
 					continue; 
 				}
