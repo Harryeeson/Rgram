@@ -694,13 +694,39 @@ public class Rgram{
 					System.out.println("This user does not exist");
 					continue;
 				}
-				else{
-					break; 
-				}	
+				// else{
+				// 	break; 
+				// }	
 			} 
 			catch(Exception e) {
 				System.out.println(e.getMessage());
 				continue; 
+			}
+			//check if user is trying to follow him/herself
+			try{
+				if(following_usr.equals(esql.username)){
+					System.out.println("You cannot follow yourself");
+					continue; 
+				}
+			}
+			catch(Exception e){
+				System.out.println(e.getMessage()); 
+			}
+			
+			//check if user is already following user
+			try {
+				String query_following = "SELECT * FROM Followers WHERE username = '" + esql.username + "'AND following_usr = '" + following_usr + "';"; 
+				if (esql.executeQuery(query_following) != 0){
+					System.out.println("You are already following '" + following_usr + "'."); 
+					continue;
+				}
+				else{
+					break;
+				}
+			}
+			catch(Exception e){
+				System.out.println(e.getMessage()); 
+				continue;
 			}
 		} while(true); 
 
