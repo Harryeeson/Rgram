@@ -760,7 +760,7 @@ public class Rgram{
 	public static void ListPopularUsers(Rgram esql) {	// 4
 		System.out.println("Most popular Users in descending  order.\n");
 		try {
-				String popular_users_query = "SELECT username, COUNT(fid) FROM Followers GROUP BY username ORDER BY COUNT(fid) DESC LIMIT 5;";
+				String popular_users_query = "SELECT username, COUNT(fid) AS NumFollowers FROM Followers GROUP BY username ORDER BY COUNT(fid) DESC LIMIT 5;";
 				esql.executeQueryAndPrintResult(popular_users_query); 
 				System.out.println("end of popular users list.");
 	
@@ -899,12 +899,12 @@ public class Rgram{
 				}
 				break;
 
-			case 5: // Date range  XX/XX/XXXX
+			case 5: // Date range
 				do {
 					try {
-						System.out.println("What is the earliest date?: ");
+						System.out.println("What is the earliest date? (MM/DD/YYYY): ");
 						earliest_date = in.readLine();
-						System.out.println("What is the latest date?: ");
+						System.out.println("What is the latest date? (MM/DD/YYYY): ");
 						latest_date = in.readLine();
 						if((earliest_date.length() > 10 || earliest_date.length() == 0) || (latest_date.length() > 10 || latest_date.length() == 0)) {
 							System.out.println("Dates cannot be more than 10 characters or empty. Please try again.");
@@ -1164,7 +1164,6 @@ public class Rgram{
 		}
 
 		photo_title = photo_list.get(0).get(0);
-		System.out.println(photo_title);
 
 		//insert hdfs function to download photo
 		//title of photo is stored in photo_title
