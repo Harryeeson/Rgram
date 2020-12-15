@@ -715,7 +715,7 @@ public class Rgram{
 			
 			//check if user is already following user
 			try {
-				String query_following = "SELECT * FROM Followers WHERE username = '" + esql.username + "'AND following_usr = '" + following_usr + "';"; 
+				String query_following = "SELECT * FROM Followers WHERE username = '" + following_usr + "'AND following_usr = '" + Rgram.username + "';"; 
 				if (esql.executeQuery(query_following) != 0){
 					System.out.println("You are already following '" + following_usr + "'."); 
 					continue;
